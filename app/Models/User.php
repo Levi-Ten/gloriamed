@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +12,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Atributele care pot fi completate în masă.
      *
      * @var array<int, string>
      */
@@ -21,10 +20,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role', // rol: principal, secundar, vizualizare
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Atributele ascunse la serializare.
      *
      * @var array<int, string>
      */
@@ -34,12 +34,36 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Atributele castate automat.
      *
      * @var array<string, string>
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password' => 'hashed', // hash automat
     ];
+
+    /**
+     * Verifică dacă utilizatorul este admin principal.
+     */
+    public function isPrincipal()
+    {
+        return $this->role === 'principal';
+    }
+
+    /**
+     * Verifică dacă utilizatorul este admin secundar.
+     */
+    public function isSecundar()
+    {
+        return $this->role === 'secundar';
+    }
+
+    /**
+     * Verifică dacă utilizatorul poate vizualiza datele.
+     */
+    public function canView()
+    {
+        return in_array($this->role, ['principal','secundar','vizualizare']);
+    }
 }

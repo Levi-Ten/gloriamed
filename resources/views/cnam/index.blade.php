@@ -20,6 +20,14 @@
 </head>
 
 <body>
+     <!-- Buton logout simplu -->
+<div style="margin-bottom:20px;">
+    <a href="{{ route('auth.logout') }}"
+       style="color:white; background-color:rgb(193, 193, 193); padding:5px 10px; text-decoration:none; border-radius:5px;">
+       Logout
+    </a>
+</div>
+
     <div class="container">
         <h2>Lista pacienți CNAM</h2>
 

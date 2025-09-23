@@ -84,4 +84,15 @@ class CnamController extends Controller
         $cnam->delete();
         return redirect()->route('cnam.index')->with('success', 'Pacient șters cu succes!');
     }
+    public function __construct()
+{
+    $this->middleware('auth.cnam');
+    $this->middleware(function ($request, $next) {
+        $response = $next($request);
+        return $response->header('Cache-Control','no-cache, no-store, must-revalidate')
+                        ->header('Pragma','no-cache')
+                        ->header('Expires','0');
+    });
+}
+
 }
