@@ -1,0 +1,20 @@
+proiect gloriamed in laravel, proiectul laravel l-am facut, vreau sa creez prima tabela sala de proceduri in care am campurile: data, numele si prenumele, hemograma, urograma, biochimia, imunologia, HbA1c, HBsAg, MRS_HIV, AFP, Hemostaza
+
+proiect gloriamed in laravel, proiectul laravel l-am facut, vreau sa creez prima tabela: cnam cu campurile: numele, prenumele, data nasterii, idnp, localitatea, sectorul, strada, casa, blocul, apartamentul, ultimul camp, sa contina: numele prenumele data nasterii. si cand completez aceste campuri din forma, ultimul camp sa se completeze automat, sa preia datele care leam introdus, imi trebuie seed, controller, model si view
+
+CREATE TABLE `cnam` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `numele` VARCHAR(255) NOT NULL,
+  `prenumele` VARCHAR(255) NOT NULL,
+  `data_nasterii` DATE NOT NULL,
+  `idnp` VARCHAR(20) NOT NULL UNIQUE,
+  `localitatea` VARCHAR(255) NOT NULL,
+  `sectorul` VARCHAR(255) NULL,
+  `strada` VARCHAR(255) NULL,
+  `casa` VARCHAR(50) NULL,
+  `blocul` VARCHAR(50) NULL,
+  `apartamentul` VARCHAR(50) NULL,
+  `full_info` VARCHAR(500) NOT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT NULL,
+  `updated_at` TIMESTAMP NULL DEFAULT NULL
+);
