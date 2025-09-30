@@ -1,40 +1,17 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gloriamed</title>
-    <link rel="icon" type="image/png" sizes="84x84" href="{{ asset('favicon.png') }}">
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+@section('title', 'Lista pacientilor CNAM')
 
-</head>
-
-<body>
-     <!-- Buton logout simplu -->
-<div style="margin-bottom:20px;">
-    <a href="{{ route('auth.logout') }}"
-       style="color:white; background-color:rgb(193, 193, 193); padding:5px 10px; text-decoration:none; border-radius:5px;">
-       Logout
-    </a>
-</div>
+@section('content')
 
     <div class="container">
         <h2>Lista pacienți CNAM</h2>
-
-        <a href="{{ route('cnam.create') }}" class="btn-add">
-            <i class="fa-solid fa-user-plus"></i>
-            Adaugă pacient nou
-        </a>
+        <div style="display:flex; gap:10px;">
+            <a href="{{ route('cnam.create') }}" class="btn-add">
+                <i class="fa-solid fa-user-plus"></i>
+                Adaugă pacient nou
+            </a>
+        </div>
         {{-- <button id="addRow" class="btn btn-success">Adaugă pacient nou</button> --}}
         <br><br>
 
@@ -81,13 +58,13 @@
                                     style="width:60px;"></td>
                             <td><input type="text" value="{{ $r->full_info }}" readonly></td>
                             <td>
-                                <button type="submit" class="btn btn-primary">💾 Salvează</button>
+                                <button type="submit" class="">💾 Salvează</button>
                         </form>
 
                         <form method="POST" action="{{ route('cnam.destroy', $r->id) }}" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger"
+                            <button type="submit" class=""
                                 onclick="return confirm('Ești sigur că vrei să ștergi?')">🗑 Șterge</button>
                         </form>
                         </td>
@@ -100,7 +77,9 @@
             </tbody>
         </table>
     </div>
-</body>
+@endsection
+
+
 
 {{-- <script>
     document.getElementById('addRow').addEventListener('click', function() {
@@ -151,5 +130,3 @@
         });
     });
     </script> --}}
-
-</html>

@@ -1,0 +1,135 @@
+/* Container */
+.container-laborator {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+/* Titluri */
+h2, h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Carduri */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+}
+
+/* Card body */
+.card-body {
+    padding: 15px;
+}
+
+/* Form elements */
+input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+.form-search{
+    /* border: 1px solid #ff0000; */
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form-search input{
+    width: 30%;
+    margin-right: 20px;
+}
+textarea.form-control, 
+input.form-control, 
+select.form-control {
+    border-radius: 8px;
+    border: 1px solid #514f4f;
+    padding: 8px;
+    /* margin-bottom: 12px; */
+}
+.list-group-item:hover {
+    background-color: #dddddd;
+    width: fit-content;
+    padding: 0px 5px;
+}
+/* Button */
+.btn {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-success {
+    background-color: #2ecc71;
+    border: none;
+    color: white;
+    transition: background 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #27ae60;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    transition: background 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* Lista fișiere */
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+/* Imagini fișiere */
+ul li img {
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    max-height: 150px;
+}
+
+/* Input file */
+input[type="file"] {
+    margin-top: 5px;
+}
+
+/* Separatoare */
+hr {
+    margin: 25px 0;
+    border: 0;
+    border-top: 1px solid #ccc;
+}

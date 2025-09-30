@@ -1,19 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Adaugare pacient CNAM</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-</head>
-
-<body>
+@extends('layouts.app')
+@section('title', 'Adaugă pacient | Forma')
+@section('content')
 
     <div class="container">
         <h2>Adaugă pacient CNAM</h2>
-<br><br>
+        <br><br>
         @if ($errors->any())
             <div style="color:red;">
                 <ul>
@@ -82,11 +73,14 @@
                 <button type="submit">💾 Salvează</button>
                 <a href="{{ route('cnam.index') }}" style="margin-left:10px;">⬅ Înapoi la listă</a>
             </div>
+            {{-- <div class="form-group">
+                <a href="{{ route('laborator.create') }}" class="btn-add">
+                    <i class="fa-solid fa-flask-vial"></i>
+                    Laborator
+                </a>
+            </div> --}}
         </form>
 
     </div>
 
-
-</body>
-
-</html>
+@endsection

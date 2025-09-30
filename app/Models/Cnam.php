@@ -36,4 +36,8 @@ class Cnam extends Model
             $cnam->full_info = $cnam->numele . ' ' . $cnam->prenumele . ' ' . $cnam->data_nasterii;
         });
     }
+    public function laboratorPacienti()
+    {
+        return $this->hasMany(CnamLaborator::class);
+    }
 }

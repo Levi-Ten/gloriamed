@@ -1,0 +1,50 @@
+/* Header general */
+.header {
+    background-color: #f8f9fa; /* alb-gri foarte deschis */
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+/* Container */
+.header .container {
+    /* max-width: 1200px; */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Navigația */
+.nav-header {
+    display: flex;
+    gap: 15px;
+    /* justify-content: flex-end; */
+    align-items: center;
+}
+
+/* Linkuri generale */
+.nav-header a {
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Butoane standard */
+.btn-nav {
+    color: #fff;
+    background-color: #28a745; /* verde medical */
+}
+
+.btn-nav:hover {
+    background-color: #218838;
+}
+
+/* Buton logout */
+.btn-logout {
+    background-color: #dc3545; /* roșu simplu */
+    color: #fff;
+}
+
+.btn-logout:hover {
+    background-color: #c82333;
+}

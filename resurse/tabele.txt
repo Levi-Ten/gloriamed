@@ -18,3 +18,295 @@ CREATE TABLE `cnam` (
   `created_at` TIMESTAMP NULL DEFAULT NULL,
   `updated_at` TIMESTAMP NULL DEFAULT NULL
 );
+
+
+in continuare trebuie sa am cateva tabele:
+1. hemograma
+cu campurile: hemograma-checkbox; proba hemograma -checkbox; rezultat hemogram -incarc pdf sau doc sau imagine; rezultat hemograma-text;
+vsh -checkbox; rezultat vsh -text; cuagolograma -checkbox; rezultat cuagolograma-text;
+2. hemostaza
+campurile: hemostaza -checkbox; proba hemostaza -checkbox;
+3.hiv
+campurile: mrs_hiv -checkbox; proba mrs_hiv-checkbox;
+4.biochimia 
+campurile: biochimia -checkbox;proba biochimia -checkbox; rezultat biochomia -incarc pdf sau doc sau imagine;rezultat biochomia-text;
+colesterol total -checkbox; hdl-colesterol -checkbox; ldl-colesterol -checkbox; trigliceride -checkbox; ureea -checkbox; creatina -checkbox; 
+afp -checkbox; proba afp -checkbox; glucoza -checkbox;alt -checkbox;ast -checkbox;alfa-amilaza -checkbox; fosfataza alcalina -checkbox; ldh lactat dehidratat -checkbox; 
+bilirubina totala -checkbox; bilirubina directa -checkbox; lipaza -checkbox; proteina tottala -checkbox;albumina (ser) -checkbox;
+acid uric -checkbox; ggt -checkbox;magneziu -checkbox; calciu -checkbox;ferum -checkbox;
+
+5.imunologia
+campurile:imunologia-checkbox; proba imunologia -checkbox; rezultat imunologia -incarc pdf sau doc sau imagine;rezultat imunologia-text;
+antistreptolizina-O -checkbox; factor reumatic -checkbox;pcr -checkbox;tt3 -checkbox;tt4 -checkbox; tsh -checkbox;psa -checkbox; HBsAg -checkbox;
+proba HBsAg -checkbox; HbA1c -checkbox; proba HbA1c -checkbox;
+
+6.urograma
+campurile: urograma-checkbox;proba urograma -checkbox; rezultat urograma -incarc pdf sau doc sau imagine;rezultat urograma-text;
+7.coprologia
+campurile: coprologia-checkbox;proba coprologia -checkbox; rezultat coprologia -incarc pdf sau doc sau imagine;rezultat coprologia-text;
+helminti -checkbox; sange ocult -checkbox;
+
+in views (views > cnam > laborator.blade.php) trebuie sa am afisate campurile din acest tabel, sa pot bifa si completa. in partea de sus va trebui sa am 
+un camp, in care sa afisez id, anul, data si luna nasterii, un select din care selectez datele persoanei din tabela cnam campul full_info, si sai
+atribui ce proceduri, analize a facut, sa pot bifa, debifa...sa se reflecte in baza de date. aceste tabele trebuie sa faca legatura cu tabela cnam
+
+CREATE TABLE hemograma (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    cnam_id BIGINT UNSIGNED NOT NULL,
+    hemograma_checkbox TINYINT(1) DEFAULT 0,
+    proba_hemograma_checkbox TINYINT(1) DEFAULT 0,
+    rezultat_hemograma_file VARCHAR(255),
+    rezultat_hemograma_text TEXT,
+    vsh_checkbox TINYINT(1) DEFAULT 0,
+    rezultat_vsh_file VARCHAR(255),
+    cuagolograma_checkbox TINYINT(1) DEFAULT 0,
+    rezultat_cuagolograma_file VARCHAR(255),
+    FOREIGN KEY (cnam_id) REFERENCES cnam(id) ON DELETE CASCADE
+);
+
+CREATE TABLE hemostaza (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    cnam_id INT NOT NULL,
+    hemostaza_checkbox BIT DEFAULT 0,
+    proba_hemostaza_checkbox BIT DEFAULT 0,
+    FOREIGN KEY (cnam_id) REFERENCES cnam(id) ON DELETE CASCADE
+);
+
+CREATE TABLE hiv (
+    id INT IDENTITY PRIMARY KEY,
+    cnam_id INT NOT NULL,
+    mrs_hiv_checkbox BIT DEFAULT 0,
+    proba_mrs_hiv_checkbox BIT DEFAULT 0,
+    FOREIGN KEY (cnam_id) REFERENCES cnam(id) ON DELETE CASCADE
+);
+
+CREATE TABLE biochimia (
+    id INT IDENTITY PRIMARY KEY,
+    cnam_id INT NOT NULL,
+    biochimia_checkbox BIT DEFAULT 0,
+    proba_biochimia_checkbox BIT DEFAULT 0,
+    rezultat_biochimia_file VARCHAR(255),
+    rezultat_biochimia_text TEXT,
+    colesterol_total_checkbox BIT DEFAULT 0,
+    hdl_colesterol_checkbox BIT DEFAULT 0,
+    ldl_colesterol_checkbox BIT DEFAULT 0,
+    trigliceride_checkbox BIT DEFAULT 0,
+    ureea_checkbox BIT DEFAULT 0,
+    creatina_checkbox BIT DEFAULT 0,
+    afp_checkbox BIT DEFAULT 0,
+    proba_afp_checkbox BIT DEFAULT 0,
+    glucoza_checkbox BIT DEFAULT 0,
+    alt_checkbox BIT DEFAULT 0,
+    ast_checkbox BIT DEFAULT 0,
+    alfa_amilaza_checkbox BIT DEFAULT 0,
+    fosfataza_alcalina_checkbox BIT DEFAULT 0,
+    ldh_lactat_dehidratat_checkbox BIT DEFAULT 0,
+    bilirubina_totala_checkbox BIT DEFAULT 0,
+    bilirubina_dreapta_checkbox BIT DEFAULT 0,
+    lipaza_checkbox BIT DEFAULT 0,
+    proteina_totala_checkbox BIT DEFAULT 0,
+    albumina_ser_checkbox BIT DEFAULT 0,
+    acid_uric_checkbox BIT DEFAULT 0,
+    ggt_checkbox BIT DEFAULT 0,
+    magneziu_checkbox BIT DEFAULT 0,
+    calciu_checkbox BIT DEFAULT 0,
+    ferum_checkbox BIT DEFAULT 0,
+    FOREIGN KEY (cnam_id) REFERENCES cnam(id) ON DELETE CASCADE
+);
+
+CREATE TABLE imunologia (
+    id INT IDENTITY PRIMARY KEY,
+    cnam_id INT NOT NULL,
+    imunologia_checkbox BIT DEFAULT 0,
+    proba_imunologia_checkbox BIT DEFAULT 0,
+    rezultat_imunologia_file VARCHAR(255),
+    rezultat_imunologia_text TEXT,
+    antistreptolizina_o_checkbox BIT DEFAULT 0,
+    factor_reumatic_checkbox BIT DEFAULT 0,
+    pcr_checkbox BIT DEFAULT 0,
+    tt3_checkbox BIT DEFAULT 0,
+    tt4_checkbox BIT DEFAULT 0,
+    tsh_checkbox BIT DEFAULT 0,
+    psa_checkbox BIT DEFAULT 0,
+    hbsag_checkbox BIT DEFAULT 0,
+    proba_hbsag_checkbox BIT DEFAULT 0,
+    hba1c_checkbox BIT DEFAULT 0,
+    proba_hba1c_checkbox BIT DEFAULT 0,
+    FOREIGN KEY (cnam_id) REFERENCES cnam(id) ON DELETE CASCADE
+);
+
+CREATE TABLE urograma (
+    id INT IDENTITY PRIMARY KEY,
+    cnam_id INT NOT NULL,
+    urograma_checkbox BIT DEFAULT 0,
+    proba_urograma_checkbox BIT DEFAULT 0,
+    rezultat_urograma_file VARCHAR(255),
+    rezultat_urograma_text TEXT,
+    FOREIGN KEY (cnam_id) REFERENCES cnam(id) ON DELETE CASCADE
+);
+CREATE TABLE coprologia (
+    id INT IDENTITY PRIMARY KEY,
+    cnam_id INT NOT NULL,
+    coprologia_checkbox BIT DEFAULT 0,
+    proba_coprologia_checkbox BIT DEFAULT 0,
+    rezultat_coprologia_file VARCHAR(255),
+    rezultat_coprologia_text TEXT,
+    helminti_checkbox BIT DEFAULT 0,
+    sange_ocult_checkbox BIT DEFAULT 0,
+    FOREIGN KEY (cnam_id) REFERENCES cnam(id) ON DELETE CASCADE
+);
+
+CREATE TABLE `laborator` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `pacient_id` BIGINT UNSIGNED NOT NULL,
+
+  -- Hemograma
+  `hemograma` BOOLEAN DEFAULT FALSE,
+  `proba_hemograma` BOOLEAN DEFAULT FALSE,
+  `rezultat_hemograma_text` TEXT NULL,
+
+  -- VSH
+  `vsh` BOOLEAN DEFAULT FALSE,
+  `rezultat_vsh_text` TEXT NULL,
+
+  -- Coagulograma
+  `coagulograma` BOOLEAN DEFAULT FALSE,
+  `rezultat_coagulograma_text` TEXT NULL,
+
+  -- Hemostaza
+  `hemostaza` BOOLEAN DEFAULT FALSE,
+  `proba_hemostaza` BOOLEAN DEFAULT FALSE,
+
+  -- MRS HIV
+  `mrs_hiv` BOOLEAN DEFAULT FALSE,
+  `proba_mrs_hiv` BOOLEAN DEFAULT FALSE,
+
+  -- Biochimia
+  `biochimia` BOOLEAN DEFAULT FALSE,
+  `proba_biochimia` BOOLEAN DEFAULT FALSE,
+  `rezultat_biochimia_text` TEXT NULL,
+
+  -- Biochimia detalii
+  `colesterol_total` BOOLEAN DEFAULT FALSE,
+  `hdl_colesterol` BOOLEAN DEFAULT FALSE,
+  `ldl_colesterol` BOOLEAN DEFAULT FALSE,
+  `trigliceride` BOOLEAN DEFAULT FALSE,
+  `ureea` BOOLEAN DEFAULT FALSE,
+  `creatina` BOOLEAN DEFAULT FALSE,
+
+  -- AFP
+  `afp` BOOLEAN DEFAULT FALSE,
+  `proba_afp` BOOLEAN DEFAULT FALSE,
+
+  -- Alte analize
+  `glucoza` BOOLEAN DEFAULT FALSE,
+  `alt` BOOLEAN DEFAULT FALSE,
+  `ast` BOOLEAN DEFAULT FALSE,
+  `alfa_amilaza` BOOLEAN DEFAULT FALSE,
+  `fosfataza_alcalina` BOOLEAN DEFAULT FALSE,
+  `ldh` BOOLEAN DEFAULT FALSE,
+  `bilirubina_totala` BOOLEAN DEFAULT FALSE,
+  `bilirubina_directa` BOOLEAN DEFAULT FALSE,
+  `lipaza` BOOLEAN DEFAULT FALSE,
+  `proteina_totala` BOOLEAN DEFAULT FALSE,
+  `albumina` BOOLEAN DEFAULT FALSE,
+  `acid_uric` BOOLEAN DEFAULT FALSE,
+  `ggt` BOOLEAN DEFAULT FALSE,
+  `magneziu` BOOLEAN DEFAULT FALSE,
+  `calciu` BOOLEAN DEFAULT FALSE,
+  `ferum` BOOLEAN DEFAULT FALSE,
+
+  -- Imunologia
+  `imunologia` BOOLEAN DEFAULT FALSE,
+  `proba_imunologia` BOOLEAN DEFAULT FALSE,
+  `rezultat_imunologia_text` TEXT NULL,
+
+  -- Imunologia detalii
+  `antistreptolizina_o` BOOLEAN DEFAULT FALSE,
+  `factor_reumatic` BOOLEAN DEFAULT FALSE,
+  `pcr` BOOLEAN DEFAULT FALSE,
+  `tt3` BOOLEAN DEFAULT FALSE,
+  `tt4` BOOLEAN DEFAULT FALSE,
+  `tsh` BOOLEAN DEFAULT FALSE,
+  `psa` BOOLEAN DEFAULT FALSE,
+
+  -- HBsAg
+  `hbsag` BOOLEAN DEFAULT FALSE,
+  `proba_hbsag` BOOLEAN DEFAULT FALSE,
+
+  -- HbA1c
+  `hba1c` BOOLEAN DEFAULT FALSE,
+  `proba_hba1c` BOOLEAN DEFAULT FALSE,
+
+  -- Urograma
+  `urograma` BOOLEAN DEFAULT FALSE,
+  `proba_urograma` BOOLEAN DEFAULT FALSE,
+  `rezultat_urograma_text` TEXT NULL,
+
+  -- Coprologia
+  `coprologia` BOOLEAN DEFAULT FALSE,
+  `proba_coprologia` BOOLEAN DEFAULT FALSE,
+  `rezultat_coprologia_text` TEXT NULL,
+
+  -- Diverse
+  `helminti` BOOLEAN DEFAULT FALSE,
+  `sange_ocult` BOOLEAN DEFAULT FALSE,
+
+  `created_at` TIMESTAMP NULL DEFAULT NULL,
+  `updated_at` TIMESTAMP NULL DEFAULT NULL,
+
+  CONSTRAINT fk_laborator_pacient FOREIGN KEY (`pacient_id`) REFERENCES `cnam`(`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `laborator_fisiere` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `laborator_id` BIGINT UNSIGNED NOT NULL,
+  `tip_rezultat` VARCHAR(50) NOT NULL, -- ex: hemograma, biochimia, imunologia, urograma, coprologia
+  `fisier` VARCHAR(255) NOT NULL,      -- path-ul către fișier
+  `created_at` TIMESTAMP NULL DEFAULT NULL,
+  `updated_at` TIMESTAMP NULL DEFAULT NULL,
+
+  CONSTRAINT fk_laborator_fisiere FOREIGN KEY (`laborator_id`) REFERENCES `laborator`(`id`) ON DELETE CASCADE
+);
+
+
+acum vreau sa fac un formular "sala de proceduri" cu campurile : data, numele prenumele, hemograma, urograma, biochimia, imunologia, hba1c,
+hbsag, mrs_hiv, afp, hemostaza
+numele si prenumele il ea din 
+`cnam` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `numele` VARCHAR(255) NOT NULL,
+  `prenumele` VARCHAR(255) NOT NULL,
+  `data_nasterii` DATE NOT NULL,
+  `idnp` VARCHAR(20) NOT NULL UNIQUE,
+  `localitatea` VARCHAR(255) NOT NULL,
+  `sectorul` VARCHAR(255) NULL,
+  `strada` VARCHAR(255) NULL,
+  `casa` VARCHAR(50) NULL,
+  `blocul` VARCHAR(50) NULL,
+  `apartamentul` VARCHAR(50) NULL,
+  `full_info` VARCHAR(500) NOT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT NULL,
+  `updated_at` TIMESTAMP NULL DEFAULT NULL
+);
+sa il aleg din un select
+dupa daca bifez una din analize in sala de proceduri sa se modifice si in tabela `laborator`
+au campuri asemenea, la acelas pacient
+
+CREATE TABLE `proceduri` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `pacient_id` BIGINT UNSIGNED NOT NULL,
+  `data_procedurii` DATE NOT NULL,
+  `hemograma` BOOLEAN DEFAULT 0,
+  `urograma` BOOLEAN DEFAULT 0,
+  `biochimia` BOOLEAN DEFAULT 0,
+  `imunologia` BOOLEAN DEFAULT 0,
+  `hba1c` BOOLEAN DEFAULT 0,
+  `hbsag` BOOLEAN DEFAULT 0,
+  `mrs_hiv` BOOLEAN DEFAULT 0,
+  `afp` BOOLEAN DEFAULT 0,
+  `hemostaza` BOOLEAN DEFAULT 0,
+  `created_at` TIMESTAMP NULL DEFAULT NULL,
+  `updated_at` TIMESTAMP NULL DEFAULT NULL,
+  CONSTRAINT `proceduri_pacient_id_foreign` FOREIGN KEY (`pacient_id`) REFERENCES `cnam`(`id`) ON DELETE CASCADE
+);
