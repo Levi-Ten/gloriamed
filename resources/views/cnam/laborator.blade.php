@@ -10,22 +10,24 @@
             <button type="submit" class="btn btn-primary">Caută</button>
         </form>
         <div class="container-laborator" style="display: flex; justify-content: center; align-items: center;">
-            @if($prev_id)
-                <a href="{{ route('laborator.create', ['pacient_id' => $prev_id, 'search' => request('search')]) }}" class="btn btn-secondary">
+            @if ($prev_id)
+                <a href="{{ route('laborator.create', ['pacient_id' => $prev_id, 'search' => request('search')]) }}"
+                    class="btn btn-secondary">
                     <i class="fa-solid fa-arrow-left-long"></i>
                     precedent
                 </a>
             @endif
-        
-            @if($next_id)
-                <a href="{{ route('laborator.create', ['pacient_id' => $next_id, 'search' => request('search')]) }}" class="btn btn-secondary">
+
+            @if ($next_id)
+                <a href="{{ route('laborator.create', ['pacient_id' => $next_id, 'search' => request('search')]) }}"
+                    class="btn btn-secondary">
                     urmator
                     <i class="fa-solid fa-arrow-right-long"></i>
-                    
+
                 </a>
             @endif
         </div>
-        
+
         @if (!$pacient_id && request('search'))
             @if ($pacienti->count())
                 <div class="container-laborator">
@@ -67,8 +69,16 @@
 
             @if ($pacient_id)
                 <hr>
-                <p>Analize pentru: <b>{{ $pacienti->find($pacient_id)->numele }}
-                        {{ $pacienti->find($pacient_id)->prenumele }}</b></p>
+                {{-- <p>Analize pentru: <b>{{ $pacienti->find($pacient_id)->numele }}
+                        {{ $pacienti->find($pacient_id)->prenumele }}</b></p> --}}
+                @if ($pacientSelectat)
+                    <p>Analize pentru:
+                        <b>{{ $pacientSelectat->numele }} {{ $pacientSelectat->prenumele }}</b>
+                    </p>
+                @else
+                    <p><b>Niciun pacient selectat</b></p>
+                @endif
+
 
                 <span>cod: {{ $pacient_id }}</span>
                 <span>data: {{ $analize?->created_at->format('d.m.Y') }}</span>
@@ -408,3 +418,8 @@
         //     });
         // });
     </script>
+
+
+
+
+

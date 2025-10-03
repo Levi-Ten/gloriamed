@@ -45,9 +45,9 @@ class LaboratorController extends Controller
     // }
     public function create(Request $request)
     {
+        // Pacienți pentru lista de căutare
         $query = Cnam::query();
     
-        // Filtrare după căutare
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -70,19 +70,29 @@ class LaboratorController extends Controller
             ? Laborator::with('fisiere')->where('pacient_id', $pacient_id)->first() 
             : null;
     
-        // Navigare Anterior / Următor
+        // --- Calcul săgeți ---
         $prev_id = $next_id = null;
+    
         if ($pacient_id) {
-            $currentIndex = $pacienti->search(fn($p) => $p->id == $pacient_id);
+            // Luăm toți pacienții ordonați
+            $allPacienti = Cnam::orderBy('numele')->orderBy('prenumele')->get();
+    
+            $currentIndex = $allPacienti->search(fn($p) => $p->id == $pacient_id);
     
             if ($currentIndex !== false) {
-                $prev_id = $pacienti[$currentIndex - 1]->id ?? null;
-                $next_id = $pacienti[$currentIndex + 1]->id ?? null;
+                if ($currentIndex > 0) {
+                    $prev_id = $allPacienti[$currentIndex - 1]->id;
+                }
+                if ($currentIndex < $allPacienti->count() - 1) {
+                    $next_id = $allPacienti[$currentIndex + 1]->id;
+                }
             }
         }
-    
-        return view('cnam.laborator', compact('pacienti', 'pacient_id', 'analize', 'prev_id', 'next_id'));
+        $pacientSelectat = $pacient_id ? Cnam::find($pacient_id) : null;
+        return view('cnam.laborator', compact('pacienti', 'pacient_id', 'analize', 'prev_id', 'next_id', 'pacientSelectat'));
     }
+    
+    
     
 
     public function store(Request $request)

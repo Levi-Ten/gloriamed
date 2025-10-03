@@ -107,7 +107,7 @@ a{
     overflow-x: auto;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     table, thead, tbody, th, td, tr {
         display: block;
     }
@@ -133,6 +133,22 @@ a{
         content: attr(data-label);
     }
 
-}
+} */
+
+/* @media print {
+    table {
+        width: 100% !important;
+        display: table !important;
+        border-collapse: collapse !important;
+    }
+
+    table thead, table tbody, table tr, table td, table th {
+        display: table-cell !important;
+    }
 
 
+    .table-responsive {
+        overflow: visible !important;
+        display: block !important;
+    }
+} */
