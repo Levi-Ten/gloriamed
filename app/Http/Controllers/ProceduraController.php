@@ -13,8 +13,12 @@ class ProceduraController extends Controller
     public function index()
     {
         $proceduri = Procedura::with('pacient')->get(); // grupează toate procedurile pe pacient
+        $columns = Schema::getColumnListing('proceduri');
 
-        return view('cnam.proceduriShow', compact('proceduri'));
+        $ignore = ['id', 'pacient_id', 'data_procedurii', 'created_at', 'updated_at'];
+        $analizeFields = array_diff($columns, $ignore);
+
+        return view('cnam.proceduriShow', compact('proceduri', 'analizeFields'));
     }
 
     // public function create()

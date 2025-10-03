@@ -111,7 +111,6 @@
                                             @if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                                 <img src="{{ asset('storage/' . $f->fisier) }}" width="200">
                                             @elseif(strtolower($ext) === 'pdf')
-                                                {{-- <embed src="{{ asset('storage/'.$f->fisier) }}" type="application/pdf" width="100%" height="600px" /> --}}
                                                 <br>
                                                 <a href="{{ asset('storage/' . $f->fisier) }}" target="_blank">
                                                     Deschide PDF
@@ -120,15 +119,9 @@
                                                 <a href="{{ asset('storage/' . $f->fisier) }}"
                                                     target="_blank">{{ $f->fisier }}</a>
                                             @endif
-                                            {{-- Buton ștergere --}}
-                                            {{-- <form action="{{ route('laborator.fisiere.destroy', $f->id) }}" method="POST"
-                                        class="ms-2">
-                                        @csrf
-                                        @method('DELETE') --}}
                                             <button class="btn-danger" data-id="{{ $f->id }}">
                                                 delete
                                             </button>
-                                            {{-- </form> --}}
                                         </li>
                                     @endforeach
                                 </ul>
