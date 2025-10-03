@@ -29,7 +29,8 @@
                         <tr>
                             <td>{{ $proc->id }}</td>
                             <td>{{ $proc->pacient->numele }} {{ $proc->pacient->prenumele }}</td>
-                            <td>{{ \Carbon\Carbon::parse($proc->data)->format('d.m.Y') }}</td>
+                            {{-- <td>{{ \Carbon\Carbon::parse($proc->data)->format('d.m.Y') }}</td> --}}
+                            <td>{{ $proc->created_at->format('d.m.Y') }}</td>
                             @foreach (['hemograma', 'urograma', 'biochimia', 'imunologia', 'hba1c', 'hbsag', 'mrs_hiv', 'afp', 'hemostaza'] as $field)
                                 <td>
                                     @if ($proc->$field)
