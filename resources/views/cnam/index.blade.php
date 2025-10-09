@@ -6,23 +6,15 @@
 
     <div class="container">
         <h2>Lista pacienți CNAM</h2>
-        <div style="display:flex; gap:10px;">
-            <a href="{{ route('cnam.create') }}" class="btn-add">
-                <i class="fa-solid fa-user-plus"></i>
-                Adaugă pacient nou
-            </a>
-        </div>
-        {{-- <button id="addRow" class="btn btn-success">Adaugă pacient nou</button> --}}
         <br><br>
-
-        <table border="1" width="100%" id="patientsTable">
+        <table class="patients-table" id="patientsTable" border="1">
             <thead>
                 <tr>
                     <th>Cod</th>
-                    <th>Nume <span style="color:red;">*</span></th>
-                    <th>Prenume <span style="color:red;">*</span></th>
-                    <th>Data nașterii <span style="color:red;">*</span></th>
-                    <th>IDNP <span style="color:red;">*</span></th>
+                    <th>Nume <span style="color: red">*</span></th>
+                    <th>Prenume <span style="color: red">*</span></th>
+                    <th>Data nașterii <span style="color: red">*</span></th>
+                    <th>IDNP <span style="color: red">*</span></th>
                     <th>Localitate</th>
                     <th>Sector</th>
                     <th>Stradă</th>
@@ -31,36 +23,37 @@
                     <th>Apartament</th>
                     <th>Full Info</th>
                     <th>Acțiuni</th>
-                    <th>
-                        <i class="fa-solid fa-info"></i>
-                    </th>
+                    <th><i class="fa-solid fa-info"></i></th>
                 </tr>
             </thead>
-            <tbody>
+
+            <tbody id="patientsBody">
                 @foreach ($records as $r)
                     <tr>
                         <form method="POST" action="{{ route('cnam.update', $r->id) }}">
                             @csrf
                             @method('PUT')
                             <td>{{ $r->id }}</td>
-                            <td><input type="text" name="numele" value="{{ $r->numele }}"></td>
-                            <td><input type="text" name="prenumele" value="{{ $r->prenumele }}"></td>
-                            <td><input type="date" name="data_nasterii" value="{{ $r->data_nasterii }}"></td>
-                            <td><input type="text" name="idnp" value="{{ $r->idnp }}"></td>
-                            <td><input type="text" name="localitatea" value="{{ $r->localitatea }}"></td>
-                            <td><input type="text" name="sectorul" value="{{ $r->sectorul }}"></td>
-                            <td><input type="text" name="strada" value="{{ $r->strada }}"></td>
-                            <td><input type="text" name="casa" value="{{ $r->casa }}" style="width:60px;">
+                            <td><input class="input-field" type="text" name="numele" value="{{ $r->numele }}" required></td>
+                            <td><input class="input-field" type="text" name="prenumele" value="{{ $r->prenumele }}" required></td>
+                            <td><input class="input-field" type="date" name="data_nasterii"
+                                    value="{{ $r->data_nasterii }}" required></td>
+                            <td><input class="input-field" type="text" name="idnp" value="{{ $r->idnp }}" required></td>
+                            <td><input class="input-field" type="text" name="localitatea" value="{{ $r->localitatea }}">
                             </td>
-                            <td><input type="text" name="blocul" value="{{ $r->blocul }}" style="width:60px;">
-                            </td>
-                            <td><input type="text" name="apartamentul" value="{{ $r->apartamentul }}"
+                            <td><input class="input-field" type="text" name="sectorul" value="{{ $r->sectorul }}"></td>
+                            <td><input class="input-field" type="text" name="strada" value="{{ $r->strada }}"></td>
+                            <td><input class="input-small" type="text" name="casa" value="{{ $r->casa }}"
                                     style="width:60px;"></td>
-                            <td><input type="text" value="{{ $r->full_info }}" readonly></td>
-                            <td>
+                            <td><input class="input-small" type="text" name="blocul" value="{{ $r->blocul }}"
+                                    style="width:60px;"></td>
+                            <td><input class="input-small" type="text" name="apartamentul"
+                                    value="{{ $r->apartamentul }}" style="width:60px;"></td>
+                            <td><input class="input-field readonly" type="text" value="{{ $r->full_info }}" readonly>
+                            </td>
+                            <td class="actions">
                                 <button type="submit" class="">💾 Salvează</button>
                         </form>
-
                         <form method="POST" action="{{ route('cnam.destroy', $r->id) }}" style="display:inline;">
                             @csrf
                             @method('DELETE')
@@ -68,13 +61,49 @@
                                 onclick="return confirm('Ești sigur că vrei să ștergi?')">🗑 Șterge</button>
                         </form>
                         </td>
-                        <td>
-                            <i class="fa-solid fa-circle-info"
-                                title="Adăugat: {{ $r->created_at }}&#10;Editat: {{ $r->updated_at }}"></i>
-                        </td>
+                        <td><i class="fa-solid fa-circle-info"
+                                title="Adăugat: {{ $r->created_at }}&#10;Editat: {{ $r->updated_at }}"></i></td>
                     </tr>
                 @endforeach
             </tbody>
+
+            <!-- Rând nou pentru adăugare -->
+            <tr id="newPatientRow" class="new-row hidden">
+                <form method="POST" action="{{ route('cnam.store') }}">
+                    @csrf
+                    <td>—</td>
+                    <td><input class="input-field" type="text" name="numele" required></td>
+                    <td><input class="input-field" type="text" name="prenumele" required></td>
+                    <td><input class="input-field" type="date" name="data_nasterii" required></td>
+                    <td><input class="input-field" type="text" name="idnp" required></td>
+                    <td><input class="input-field" type="text" name="localitatea"></td>
+                    <td><input class="input-field" type="text" name="sectorul"></td>
+                    <td><input class="input-field" type="text" name="strada"></td>
+                    <td><input class="input-small" type="text" name="casa" style="width:60px;"></td>
+                    <td><input class="input-small" type="text" name="blocul" style="width:60px;"></td>
+                    <td><input class="input-small" type="text" name="apartamentul" style="width:60px;"></td>
+                    <td><input class="input-field readonly" type="text" readonly placeholder="—"></td>
+                    <td class="actions">
+                        <button type="submit" class="">💾 Salvează</button>
+                        <button type="button" id="cancelAddBtn" class="">🗑 Șterge</button>
+                    </td>
+                    <td></td>
+                </form>
+            </tr>
         </table>
+
+        <!-- Script -->
+        <script>
+            document.getElementById('addPatientBtn').addEventListener('click', function() {
+                document.getElementById('newPatientRow').classList.remove('hidden');
+                this.disabled = true;
+            });
+
+            document.getElementById('cancelAddBtn').addEventListener('click', function() {
+                document.getElementById('newPatientRow').classList.add('hidden');
+                document.getElementById('addPatientBtn').disabled = false;
+            });
+        </script>
+
     </div>
 @endsection

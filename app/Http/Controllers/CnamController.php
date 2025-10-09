@@ -14,7 +14,8 @@ class CnamController extends Controller
      */
     public function index()
     {
-        $records = Cnam::all();
+        // $records = Cnam::all();
+        $records = Cnam::orderBy('id', 'desc')->get();
         return view('cnam.index', compact('records'));
     }
 
