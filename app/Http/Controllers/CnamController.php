@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cnam;
+use App\Models\Laborator;
+use App\Models\Procedura;
 use Illuminate\Http\Request;
 
 class CnamController extends Controller
@@ -34,7 +36,6 @@ class CnamController extends Controller
             'prenumele' => 'required|string|max:255',
             'data_nasterii' => 'required|date',
             'idnp' => 'required|string|max:20|unique:cnam',
-            'localitatea' => 'required|string|max:255',
         ]);
 
         Cnam::create($request->all());
@@ -68,7 +69,6 @@ class CnamController extends Controller
             'prenumele' => 'required|string|max:255',
             'data_nasterii' => 'required|date',
             'idnp' => 'required|string|max:20|unique:cnam,idnp,' . $cnam->id,
-            'localitatea' => 'required|string|max:255',
         ]);
 
         $cnam->update($request->all());
@@ -81,18 +81,19 @@ class CnamController extends Controller
      */
     public function destroy(Cnam $cnam)
     {
+        Laborator::where('pacient_id', $cnam->id)->delete();
+        Procedura::where('pacient_id', $cnam->id)->delete();
         $cnam->delete();
         return redirect()->route('cnam.index')->with('success', 'Pacient șters cu succes!');
     }
     public function __construct()
-{
-    $this->middleware('auth.cnam');
-    $this->middleware(function ($request, $next) {
-        $response = $next($request);
-        return $response->header('Cache-Control','no-cache, no-store, must-revalidate')
-                        ->header('Pragma','no-cache')
-                        ->header('Expires','0');
-    });
-}
-
+    {
+        $this->middleware('auth.cnam');
+        $this->middleware(function ($request, $next) {
+            $response = $next($request);
+            return $response->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+        });
+    }
 }

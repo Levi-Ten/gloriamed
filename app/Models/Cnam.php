@@ -40,4 +40,8 @@ class Cnam extends Model
     {
         return $this->hasMany(CnamLaborator::class);
     }
+    public function procedura()
+    {
+        return $this->hasOne(Procedura::class, 'pacient_id');
+    }
 }

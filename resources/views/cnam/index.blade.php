@@ -23,7 +23,7 @@
                     <th>Prenume <span style="color:red;">*</span></th>
                     <th>Data nașterii <span style="color:red;">*</span></th>
                     <th>IDNP <span style="color:red;">*</span></th>
-                    <th>Localitate <span style="color:red;">*</span></th>
+                    <th>Localitate</th>
                     <th>Sector</th>
                     <th>Stradă</th>
                     <th>Casă</th>
@@ -78,55 +78,3 @@
         </table>
     </div>
 @endsection
-
-
-
-{{-- <script>
-    document.getElementById('addRow').addEventListener('click', function() {
-        const table = document.getElementById('patientsTable').getElementsByTagName('tbody')[0];
-    
-        const newRow = document.createElement('tr');
-    
-        newRow.innerHTML = `
-        <form id="patientsForm" method="POST" action="{{ route('cnam.store') }}">
-            @csrf
-            <td></td>
-            <td><input type="text" name="numele" required></td>
-            <td><input type="text" name="prenumele" required></td>
-            <td><input type="date" name="data_nasterii" required></td>
-            <td><input type="text" name="idnp" required></td>
-            <td><input type="text" name="localitatea" required></td>
-            <td><input type="text" name="sectorul"></td>
-            <td><input type="text" name="strada"></td>
-            <td><input type="text" name="casa"></td>
-            <td><input type="text" name="blocul"></td>
-            <td><input type="text" name="apartamentul"></td>
-            <td><input type="text" class="full_info" readonly></td>
-            <td>
-                <button type="submit" class="btn btn-primary">💾 Salvează</button>
-                <button type="button" class="btn btn-danger removeRow">🗑 Șterge</button>
-            </td>
-        </form>
-        `;
-    
-        table.appendChild(newRow);
-    
-        // Actualizare full_info live
-        const inputs = newRow.querySelectorAll('input[name="numele"], input[name="prenumele"], input[name="data_nasterii"]');
-        const fullInfo = newRow.querySelector('.full_info');
-    
-        inputs.forEach(input => {
-            input.addEventListener('input', () => {
-                const nume = newRow.querySelector('input[name="numele"]').value;
-                const prenume = newRow.querySelector('input[name="prenumele"]').value;
-                const data = newRow.querySelector('input[name="data_nasterii"]').value;
-                fullInfo.value = `${nume} ${prenume} ${data}`;
-            });
-        });
-    
-        // Buton remove rând
-        newRow.querySelector('.removeRow').addEventListener('click', () => {
-            newRow.remove();
-        });
-    });
-    </script> --}}

@@ -63,7 +63,8 @@ class Laborator extends Model
         'coprologia','proba_coprologia','rezultat_coprologia_text',
 
         // Diverse
-        'helminti','sange_ocult'
+        'helminti','sange_ocult',
+        'data_analizei'
     ];
 
     public function pacient()

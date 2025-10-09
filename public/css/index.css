@@ -107,48 +107,4 @@ a{
     overflow-x: auto;
 }
 
-/* @media (max-width: 768px) {
-    table, thead, tbody, th, td, tr {
-        display: block;
-    }
 
-    thead tr {
-        display: none;
-    }
-
-    td {
-        position: relative;
-        padding-left: 50%;
-        border-bottom: 1px solid #ccc;
-    }
-
-    td::before {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 45%;
-        padding-left: 10px;
-        font-weight: bold;
-        white-space: nowrap;
-        content: attr(data-label);
-    }
-
-} */
-
-/* @media print {
-    table {
-        width: 100% !important;
-        display: table !important;
-        border-collapse: collapse !important;
-    }
-
-    table thead, table tbody, table tr, table td, table th {
-        display: table-cell !important;
-    }
-
-
-    .table-responsive {
-        overflow: visible !important;
-        display: block !important;
-    }
-} */

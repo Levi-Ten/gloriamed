@@ -12,21 +12,80 @@ class ProceduraController extends Controller
 {
     public function index()
     {
-        $proceduri = Procedura::with('pacient')->get(); // grupează toate procedurile pe pacient
+        $pacienti = Cnam::with('procedura')
+            ->whereHas('procedura', function ($q) {
+                // $q->where('toate_procedurile', 0);
+                $q->where(function ($q1) {
+                    $q1->where('hemograma', 0)
+                        ->orWhere('urograma', 0)
+                        ->orWhere('biochimia', 0)
+                        ->orWhere('imunologia', 0)
+                        ->orWhere('hba1c', 0)
+                        ->orWhere('hbsag', 0)
+                        ->orWhere('mrs_hiv', 0)
+                        ->orWhere('afp', 0)
+                        ->orWhere('hemostaza', 0);
+                });
+            })
+            ->orWhereDoesntHave('procedura')
+            ->orderByDesc('id')
+            ->get();
         $columns = Schema::getColumnListing('proceduri');
-
-        $ignore = ['id', 'pacient_id', 'data_procedurii', 'created_at', 'updated_at'];
+        $ignore = ['id', 'pacient_id', 'data_procedurii', 'created_at', 'updated_at', 'toate_procedurile', 'data_analizei'];
         $analizeFields = array_diff($columns, $ignore);
 
-        return view('cnam.proceduriShow', compact('proceduri', 'analizeFields'));
+        return view('cnam.proceduri', compact('pacienti', 'analizeFields'));
     }
 
-    // public function create()
-    // {
-    //     $pacienti = Cnam::all();
-    //     return view('cnam.proceduri', compact('pacienti'));
-    // }
+    public function updateBulk(Request $request)
+    {
+        $proceduriData = $request->input('proceduri', []);
 
+        foreach ($proceduriData as $pacientId => $fields) {
+            $proc = Procedura::firstOrNew(['pacient_id' => $pacientId]);
+
+            $fieldsToCheck = ['hemograma', 'urograma', 'biochimia', 'imunologia', 'hba1c', 'hbsag', 'mrs_hiv', 'afp', 'hemostaza'];
+            $areToate = true;
+
+            foreach ($fieldsToCheck as $field) {
+                $value = isset($fields[$field]) ? true : false;
+                $proc->$field = $value;
+
+                if (!$value) {
+                    $areToate = false;
+                }
+            }
+            $proc->save();
+
+            // sincronizare și în laborator
+            Laborator::updateOrCreate(
+                ['pacient_id' => $pacientId],
+                [
+                    'hemograma' => $proc->hemograma,
+                    'urograma' => $proc->urograma,
+                    'biochimia' => $proc->biochimia,
+                    'imunologia' => $proc->imunologia,
+                    'hba1c' => $proc->hba1c,
+                    'hbsag' => $proc->hbsag,
+                    'mrs_hiv' => $proc->mrs_hiv,
+                    'afp' => $proc->afp,
+                    'hemostaza' => $proc->hemostaza,
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Procedurile au fost actualizate cu succes!');
+    }
+
+    public function destroy($id)
+    {
+        $proc = Procedura::find($id);
+        if ($proc) {
+            // Șterge procedura
+            $proc->delete();
+        }
+        return redirect()->back()->with('success', 'Pacientul a fost șters!');
+    }
     public function create(Request $request)
     {
         $pacienti = Cnam::all();
@@ -35,45 +94,10 @@ class ProceduraController extends Controller
         $analize = $pacient_id
             ? Laborator::where('pacient_id', $pacient_id)->first()
             : null;
-
-        // Preluăm coloanele dinamice (analizele)
         $columns = Schema::getColumnListing('proceduri');
-        $exclude = ['id', 'pacient_id', 'data_procedurii', 'created_at', 'updated_at'];
+        $exclude = ['id', 'pacient_id', 'data_procedurii', 'created_at', 'updated_at', 'data_analizei'];
         $analizeFields = array_diff($columns, $exclude);
 
         return view('cnam.proceduri', compact('pacienti', 'pacient_id', 'analize', 'analizeFields'));
-    }
-    public function store(Request $request)
-    {
-        $data = $request->all();
-
-        // transformăm checkboxurile în boolean
-        foreach (['hemograma', 'urograma', 'biochimia', 'imunologia', 'hba1c', 'hbsag', 'mrs_hiv', 'afp', 'hemostaza'] as $field) {
-            $data[$field] = $request->has($field);
-        }
-
-        // salvăm sau actualizăm procedura
-        $procedura = Procedura::updateOrCreate(
-            ['pacient_id' => $request->pacient_id], // criteriu de căutare
-            $data // datele de actualizat
-        );
-
-        // actualizăm și în laborator
-        Laborator::updateOrCreate(
-            ['pacient_id' => $request->pacient_id],
-            [
-                'hemograma'   => $data['hemograma'],
-                'urograma'    => $data['urograma'],
-                'biochimia'   => $data['biochimia'],
-                'imunologia'  => $data['imunologia'],
-                'hba1c'       => $data['hba1c'],
-                'hbsag'       => $data['hbsag'],
-                'mrs_hiv'     => $data['mrs_hiv'],
-                'afp'         => $data['afp'],
-                'hemostaza'   => $data['hemostaza'],
-            ]
-        );
-
-        return redirect()->route('proceduri.create')->with('success', 'Procedura salvată și laborator actualizat!');
     }
 }

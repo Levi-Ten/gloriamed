@@ -17,8 +17,8 @@ class Procedura extends Model
         'hba1c','hbsag','mrs_hiv','afp','hemostaza'
     ];
 
-    public function pacient()
-    {
-        return $this->belongsTo(Cnam::class, 'pacient_id');
-    }
+    // public function pacient()
+    // {
+    //     return $this->belongsTo(Cnam::class, 'pacient_id');
+    // }
 }

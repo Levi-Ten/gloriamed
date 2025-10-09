@@ -39,8 +39,8 @@
             </div>
 
             <div class="form-group">
-                <label>Localitatea <span style="color:red;">*</span></label>
-                <input type="text" name="localitatea" value="{{ old('localitatea') }}" required>
+                <label>Localitatea</label>
+                <input type="text" name="localitatea" value="{{ old('localitatea') }}">
             </div>
 
             <div class="form-group">
@@ -73,12 +73,6 @@
                 <button type="submit">💾 Salvează</button>
                 <a href="{{ route('cnam.index') }}" style="margin-left:10px;">⬅ Înapoi la listă</a>
             </div>
-            {{-- <div class="form-group">
-                <a href="{{ route('laborator.create') }}" class="btn-add">
-                    <i class="fa-solid fa-flask-vial"></i>
-                    Laborator
-                </a>
-            </div> --}}
         </form>
 
     </div>

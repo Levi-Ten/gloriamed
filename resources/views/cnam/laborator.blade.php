@@ -1,32 +1,59 @@
 @extends('layouts.app')
 @section('title', 'Laborator | Forma')
 @section('content')
-
+    <h2>Laborator</h2>
+    <hr>
     <div class="mb-3">
         {{-- Căutare pacient --}}
-        <form method="GET" action="{{ route('laborator.create') }}" class="form-search">
+        <h2>Caută pacient in lista generala</h2>
+        <form method="GET" action="{{ route('laborator.create') }}" class="form-search mb-3">
             <input type="search" name="search" class="form-control" placeholder="Caută pacient după nume, prenume sau IDNP"
                 value="{{ request('search') }}">
-            <button type="submit" class="btn btn-primary">Caută</button>
+            <button type="submit" class="btn btn-primary mt-2">Caută</button>
         </form>
-        <div class="container-laborator" style="display: flex; justify-content: center; align-items: center;">
-            @if ($prev_id)
-                <a href="{{ route('laborator.create', ['pacient_id' => $prev_id, 'search' => request('search')]) }}"
-                    class="btn btn-secondary">
-                    <i class="fa-solid fa-arrow-left-long"></i>
-                    precedent
+        <br>
+        {{-- 🔍 Căutare pacienți care au deja analize --}}
+        <h2>Caută pacient cu analize</h2>
+        <form method="GET" action="{{ route('laborator.create') }}" class="form-search mb-3">
+            <input type="text" name="search_analize" class="form-control"
+                placeholder="Caută pacient cu analize (nume, prenume sau IDNP)" value="{{ request('search_analize') }}">
+            <button type="submit" class="btn btn-primary mt-2">Caută</button>
+        </form>
+        @if (!empty($searchAnalize))
+            @if ($pacientiCuAnalizeFiltrati->count())
+                <div class="container-laborator">
+                    <ul class="list-group mb-3">
+                        @foreach ($pacientiCuAnalizeFiltrati as $p)
+                            <li class="list-group-item">
+                                <a href="{{ route('laborator.create', ['pacient_id' => $p->id]) }}">
+                                    {{ $p->numele }} {{ $p->prenumele }} | {{ $p->idnp }} | {{ $p->data_analizei }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @else
+                <div class="container-laborator" style="text-align: center; color: red; font-weight: bold">
+                    Nu există niciun pacient care să corespundă căutării.
+                </div>
+            @endif
+        @endif
+
+        {{-- Navigare pacient --}}
+        {{-- <div class="form-search">
+            @if ($prevDate)
+                <a href="{{ route('laborator.create', ['pacient_id' => $pacient_id, 'data_analizei' => $prevDate]) }}"
+                    class="btn btn-secondary me-2">
+                    <i class="fa-solid fa-arrow-left-long"></i> Precedent
                 </a>
             @endif
-
             @if ($next_id)
-                <a href="{{ route('laborator.create', ['pacient_id' => $next_id, 'search' => request('search')]) }}"
+                <a href="{{ route('laborator.create', ['pacient_id' => $pacient_id, 'data_analizei' => $nextDate]) }}"
                     class="btn btn-secondary">
-                    urmator
-                    <i class="fa-solid fa-arrow-right-long"></i>
-
+                    Următor <i class="fa-solid fa-arrow-right-long"></i>
                 </a>
             @endif
-        </div>
+        </div> --}}
 
         @if (!$pacient_id && request('search'))
             @if ($pacienti->count())
@@ -48,10 +75,11 @@
             @endif
         @endif
 
+        {{-- Selectare pacient --}}
+        <div class="container-laborator mb-3">
 
-        <div class="container-laborator">
-            <h2>Laborator - Selectează pacient</h2>
-            <form method="GET" action="{{ route('laborator.create') }}">
+
+            <form method="GET" action="{{ route('laborator.create') }}" id="formDate">
                 <div class="mb-3">
                     <label for="pacient_id" class="form-label">Pacient:</label>
                     <select name="pacient_id" id="pacient_id" class="form-control" onchange="this.form.submit()">
@@ -62,299 +90,243 @@
                             </option>
                         @endforeach
                     </select>
+
                 </div>
+                {{-- </form>
+            <form method="GET" action="{{ route('laborator.create') }}"> --}}
+                <select name="date" id="date" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- Alege data --</option>
+                    @foreach ($a ?? [] as $analiza)
+                        @php
+                            $date = \Carbon\Carbon::parse($analiza->data_analizei)->format('Y-m-d');
+                        @endphp
+                        <option value="{{ $date }}"
+                            {{ isset($data_analizei) && $data_analizei == $date ? 'selected' : '' }}>
+                            {{ $date }}
+                        </option>
+                    @endforeach
+                </select>
+
             </form>
-            {{-- Căutare pacient --}}
-
-
-            @if ($pacient_id)
-                <hr>
-                {{-- <p>Analize pentru: <b>{{ $pacienti->find($pacient_id)->numele }}
-                        {{ $pacienti->find($pacient_id)->prenumele }}</b></p> --}}
-                @if ($pacientSelectat)
-                    <p>Analize pentru:
-                        <b>{{ $pacientSelectat->numele }} {{ $pacientSelectat->prenumele }}</b>
-                    </p>
-                @else
-                    <p><b>Niciun pacient selectat</b></p>
-                @endif
-
-
-                <span>cod: {{ $pacient_id }}</span>
-                <span>data: {{ $analize?->created_at->format('d.m.Y') }}</span>
-
-                <form method="POST" action="{{ route('laborator.store') }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="pacient_id" value="{{ $pacient_id }}">
-
-                    {{-- HEMOGRAMA --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Hemograma</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="hemograma" {{ $analize?->hemograma ? 'checked' : '' }}>
-                                Hemograma</label><br>
-                            <label><input type="checkbox" name="proba_hemograma"
-                                    {{ $analize?->proba_hemograma ? 'checked' : '' }}> Proba Hemograma</label><br><br>
-                            <label>Rezultat text:</label><br>
-                            <textarea class="form-control" name="rezultat_hemograma_text">{{ $analize?->rezultat_hemograma_text }}</textarea>
-                            <br><br>
-                            <label>Rezultat fișier:</label>
-                            <input type="file" class="form-control" name="rezultat_hemograma_file">
-                            @if ($analize && $analize->fisiere->where('tip_rezultat', 'hemograma')->count())
-                                <ul>
-                                    @foreach ($analize->fisiere->where('tip_rezultat', 'hemograma') as $f)
-                                        <li>
-                                            @php
-                                                $ext = pathinfo($f->fisier, PATHINFO_EXTENSION);
-                                            @endphp
-
-                                            @if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                                <img src="{{ asset('storage/' . $f->fisier) }}" width="200">
-                                            @elseif(strtolower($ext) === 'pdf')
-                                                <br>
-                                                <a href="{{ asset('storage/' . $f->fisier) }}" target="_blank">
-                                                    Deschide PDF
-                                                </a>
-                                            @else
-                                                <a href="{{ asset('storage/' . $f->fisier) }}"
-                                                    target="_blank">{{ $f->fisier }}</a>
-                                            @endif
-                                            <button class="btn-danger" data-id="{{ $f->id }}">
-                                                delete
-                                            </button>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- VSH --}}
-                    <div class="card mb-3">
-                        <div class="card-header">VSH</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="vsh" {{ $analize?->vsh ? 'checked' : '' }}>
-                                VSH</label><br>
-                            <label>Rezultat text:</label>
-                            <textarea class="form-control" name="rezultat_vsh_text">{{ $analize?->rezultat_vsh_text }}</textarea>
-                        </div>
-                    </div>
-
-                    {{-- COAGULOGrama --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Coagulograma</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="coagulograma"
-                                    {{ $analize?->coagulograma ? 'checked' : '' }}>
-                                Coagulograma</label><br>
-                            <label>Rezultat text:</label>
-                            <textarea class="form-control" name="rezultat_coagulograma_text">{{ $analize?->rezultat_coagulograma_text }}</textarea>
-                        </div>
-                    </div>
-
-                    {{-- HEMOSTAZA --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Hemostaza</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="hemostaza" {{ $analize?->hemostaza ? 'checked' : '' }}>
-                                Hemostaza</label><br>
-                            <label><input type="checkbox" name="proba_hemostaza"
-                                    {{ $analize?->proba_hemostaza ? 'checked' : '' }}> Proba Hemostaza</label>
-                        </div>
-                    </div>
-
-                    {{-- MRS HIV --}}
-                    <div class="card mb-3">
-                        <div class="card-header">MRS HIV</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="mrs_hiv" {{ $analize?->mrs_hiv ? 'checked' : '' }}> MRS
-                                HIV</label><br>
-                            <label><input type="checkbox" name="proba_mrs_hiv"
-                                    {{ $analize?->proba_mrs_hiv ? 'checked' : '' }}>
-                                Proba MRS HIV</label>
-                        </div>
-                    </div>
-
-                    {{-- BIOCHIMIA --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Biochimia</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="biochimia" {{ $analize?->biochimia ? 'checked' : '' }}>
-                                Biochimia</label><br>
-                            <label><input type="checkbox" name="proba_biochimia"
-                                    {{ $analize?->proba_biochimia ? 'checked' : '' }}> Proba Biochimia</label><br>
-                            <label>Rezultat text:</label>
-                            <textarea class="form-control" name="rezultat_biochimia_text">{{ $analize?->rezultat_biochimia_text }}</textarea>
-                            <label>Rezultat fișier (pdf/doc/img):</label>
-                            <input type="file" class="form-control" name="rezultat_biochimia_file">
-                            @if ($analize && $analize->fisiere->where('tip_rezultat', 'biochimia')->count())
-                                <ul>
-                                    @foreach ($analize->fisiere->where('tip_rezultat', 'biochimia') as $f)
-                                        <li><a href="{{ asset('storage/' . $f->fisier) }}"
-                                                target="_blank">{{ $f->fisier }}</a></li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- BIOCHIMIE DETALIATĂ --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Biochimie detaliată</div>
-                        <div class="card-body">
-                            @foreach (['colesterol_total' => 'Colesterol total', 'hdl_colesterol' => 'HDL-Colesterol', 'ldl_colesterol' => 'LDL-Colesterol', 'trigliceride' => 'Trigliceride', 'ureea' => 'Ureea', 'creatina' => 'Creatina'] as $field => $label)
-                                <label><input type="checkbox" name="{{ $field }}"
-                                        {{ $analize?->$field ? 'checked' : '' }}> {{ $label }}</label><br>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- AFP --}}
-                    <div class="card mb-3">
-                        <div class="card-header">AFP</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="afp" {{ $analize?->afp ? 'checked' : '' }}>
-                                AFP</label><br>
-                            <label><input type="checkbox" name="proba_afp" {{ $analize?->proba_afp ? 'checked' : '' }}>
-                                Proba
-                                AFP</label>
-                        </div>
-                    </div>
-
-                    {{-- ENZIME ȘI ALTELE --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Enzime și altele</div>
-                        <div class="card-body">
-                            @foreach (['glucoza' => 'Glucoza', 'alt' => 'ALT', 'ast' => 'AST', 'alfa_amilaza' => 'Alfa-amilaza', 'fosfataza_alcalina' => 'Fosfataza alcalina', 'ldh' => 'LDH', 'bilirubina_totala' => 'Bilirubina totala', 'bilirubina_directa' => 'Bilirubina directa', 'lipaza' => 'Lipaza', 'proteina_totala' => 'Proteina totala', 'albumina' => 'Albumina (ser)', 'acid_uric' => 'Acid uric', 'ggt' => 'GGT', 'magneziu' => 'Magneziu', 'calciu' => 'Calciu', 'ferum' => 'Ferum'] as $field => $label)
-                                <label><input type="checkbox" name="{{ $field }}"
-                                        {{ $analize?->$field ? 'checked' : '' }}> {{ $label }}</label><br>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- IMUNOLOGIA --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Imunologia</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="imunologia" {{ $analize?->imunologia ? 'checked' : '' }}>
-                                Imunologia</label><br>
-                            <label><input type="checkbox" name="proba_imunologia"
-                                    {{ $analize?->proba_imunologia ? 'checked' : '' }}> Proba Imunologia</label><br>
-                            <label>Rezultat text:</label>
-                            <textarea class="form-control" name="rezultat_imunologia_text">{{ $analize?->rezultat_imunologia_text }}</textarea>
-                            <label>Rezultat fișier:</label>
-                            <input type="file" class="form-control" name="rezultat_imunologia_file">
-                            @if ($analize && $analize->fisiere->where('tip_rezultat', 'imunologia')->count())
-                                <ul>
-                                    @foreach ($analize->fisiere->where('tip_rezultat', 'imunologia') as $f)
-                                        <li><a href="{{ asset('storage/' . $f->fisier) }}"
-                                                target="_blank">{{ $f->fisier }}</a></li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                            <hr>
-                            @foreach (['antistreptolizina_o' => 'Antistreptolizina-O', 'factor_reumatic' => 'Factor reumatic', 'pcr' => 'PCR', 'tt3' => 'TT3', 'tt4' => 'TT4', 'tsh' => 'TSH', 'psa' => 'PSA'] as $field => $label)
-                                <label><input type="checkbox" name="{{ $field }}"
-                                        {{ $analize?->$field ? 'checked' : '' }}> {{ $label }}</label><br>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- HBsAg --}}
-                    <div class="card mb-3">
-                        <div class="card-header">HBsAg</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="hbsag" {{ $analize?->hbsag ? 'checked' : '' }}>
-                                HBsAg</label><br>
-                            <label><input type="checkbox" name="proba_hbsag"
-                                    {{ $analize?->proba_hbsag ? 'checked' : '' }}>
-                                Proba HBsAg</label>
-                        </div>
-                    </div>
-
-                    {{-- HbA1c --}}
-                    <div class="card mb-3">
-                        <div class="card-header">HbA1c</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="hba1c" {{ $analize?->hba1c ? 'checked' : '' }}>
-                                HbA1c</label><br>
-                            <label><input type="checkbox" name="proba_hba1c"
-                                    {{ $analize?->proba_hba1c ? 'checked' : '' }}>
-                                Proba HbA1c</label>
-                        </div>
-                    </div>
-
-                    {{-- UROGRAMA --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Urograma</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="urograma" {{ $analize?->urograma ? 'checked' : '' }}>
-                                Urograma</label><br>
-                            <label><input type="checkbox" name="proba_urograma"
-                                    {{ $analize?->proba_urograma ? 'checked' : '' }}> Proba Urograma</label><br>
-                            <label>Rezultat text:</label>
-                            <textarea class="form-control" name="rezultat_urograma_text">{{ $analize?->rezultat_urograma_text }}</textarea>
-                            <label>Rezultat fișier:</label>
-                            <input type="file" class="form-control" name="rezultat_urograma_file">
-                            @if ($analize && $analize->fisiere->where('tip_rezultat', 'urograma')->count())
-                                <ul>
-                                    @foreach ($analize->fisiere->where('tip_rezultat', 'urograma') as $f)
-                                        <li><a href="{{ asset('storage/' . $f->fisier) }}"
-                                                target="_blank">{{ $f->fisier }}</a></li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- COPROLOGIA --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Coprologia</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="coprologia" {{ $analize?->coprologia ? 'checked' : '' }}>
-                                Coprologia</label><br>
-                            <label><input type="checkbox" name="proba_coprologia"
-                                    {{ $analize?->proba_coprologia ? 'checked' : '' }}> Proba Coprologia</label><br>
-                            <label>Rezultat text:</label>
-                            <textarea class="form-control" name="rezultat_coprologia_text">{{ $analize?->rezultat_coprologia_text }}</textarea>
-                            <label>Rezultat fișier:</label>
-                            <input type="file" class="form-control" name="rezultat_coprologia_file">
-                            @if ($analize && $analize->fisiere->where('tip_rezultat', 'coprologia')->count())
-                                <ul>
-                                    @foreach ($analize->fisiere->where('tip_rezultat', 'coprologia') as $f)
-                                        <li><a href="{{ asset('storage/' . $f->fisier) }}"
-                                                target="_blank">{{ $f->fisier }}</a></li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- ALTE ANALIZE --}}
-                    <div class="card mb-3">
-                        <div class="card-header">Altele</div>
-                        <div class="card-body">
-                            <label><input type="checkbox" name="helminti" {{ $analize?->helminti ? 'checked' : '' }}>
-                                Helminți</label><br>
-                            <label><input type="checkbox" name="sange_ocult"
-                                    {{ $analize?->sange_ocult ? 'checked' : '' }}>
-                                Sânge ocult</label>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-success">Salvează</button>
-                </form>
-            @endif
         </div>
-    @endsection
+    </div>
+
+    @if ($pacient_id)
+        {{-- <div class="container-laborator"> --}}
+        <form method="POST" action="{{ route('laborator.store') }}" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="pacient_id" value="{{ $pacient_id }}">
+
+            <p>Analize pentru: <b>{{ $pacientSelectat->numele }} {{ $pacientSelectat->prenumele }}</b></p>
+            <p>Cod pacient: <b> {{ $pacient_id }}</b></p>
+            <br>
+            <span>Data analizei: <b>{{ $data_analizei }}</b></span>
+            <br>
+            (selecteaza data analizei, daca nu este selectata, se va prelua automat data actuala)
+            <input type="date" name="data_analizei" value="{{ old('data_analizei', date('Y-m-d')) }}" required>
+            <br>
+            <br>
+
+            @php
+                $analize_fields = [
+                    'Hemograma' => [
+                        'checked' => 'hemograma',
+                        'text' => 'rezultat_hemograma_text',
+                        'file' => 'hemograma',
+                    ],
+                    'Proba hemograma' => ['checked' => 'proba_hemograma'],
+                    'VSH' => ['checked' => 'vsh', 'text' => 'rezultat_vsh_text'],
+                    'Coagulograma' => ['checked' => 'coagulograma', 'text' => 'rezultat_coagulograma_text'],
+                    'Hemostaza' => ['checked' => 'hemostaza'],
+                    'Proba hemostaza' => ['checked' => 'proba_hemostaza'],
+                    'MRS HIV' => ['checked' => 'mrs_hiv', 'proba' => 'proba_mrs_hiv'],
+                    'Proba mrs hiv' => ['checked' => 'proba_mrs_hiv'],
+                    'Biochimia' => [
+                        'checked' => 'biochimia',
+                        'text' => 'rezultat_biochimia_text',
+                        'file' => 'biochimia',
+                    ],
+                    'Proba biochimia' => ['checked' => 'proba_biochimia'],
+                    'Colesterol total' => ['checked' => 'coletotal'],
+                    'HDL-colesterol' => ['checked' => 'hdlcoletotal'],
+                    'LDL-colesterol' => ['checked' => 'ldlcoletotal'],
+                    'Trigliceride' => ['checked' => 'trigliceride'],
+                    'Uree' => ['checked' => 'uree'],
+                    'Creatina' => ['checked' => 'creatina'],
+                    'AFP' => ['checked' => 'afp'],
+                    'Proba afp' => ['checked' => 'proba_afp'],
+                    'Glucoza' => ['checked' => 'glucoza'],
+                    'ALT' => ['checked' => 'alt'],
+                    'AST' => ['checked' => 'ast'],
+                    'Alfa-amilaza' => ['checked' => 'alfaamilaza'],
+                    'Fosfataza alcalina' => ['checked' => 'fosfatazaalcalina'],
+                    'LDH lactat dehidratat' => ['checked' => 'ldhlactatdehidratat'],
+                    'Bilirubina totala' => ['checked' => 'bilirubinatotala'],
+                    'Bilirubina directa' => ['checked' => 'bilirubinadirecta'],
+                    'Lipaza' => ['checked' => 'lipaza'],
+                    'Proteina tottala' => ['checked' => 'proteinatottala'],
+                    'Albumina (ser)' => ['checked' => 'albumina'],
+                    'Acid uric' => ['checked' => 'aciduric'],
+                    'GGT' => ['checked' => 'ggt'],
+                    'Magneziu' => ['checked' => 'magneziu'],
+                    'Calciu' => ['checked' => 'calciu'],
+                    'Ferum' => ['checked' => 'ferum'],
+
+                    'Imunologia' => [
+                        'checked' => 'imunologia',
+                        'text' => 'rezultat_imunologia_text',
+                        'file' => 'imunologia',
+                    ],
+                    'Proba imunologia' => ['checked' => 'proba_imunologia'],
+                    'Antistreptolizina-O' => ['checked' => 'antistreptolizinao'],
+                    'Factor reumatic' => ['checked' => 'factorreumatic'],
+                    'PCR' => ['checked' => 'pcr'],
+                    'TT3' => ['checked' => 'tt3'],
+                    'TT4' => ['checked' => 'tt4'],
+                    'TSH' => ['checked' => 'tsh'],
+                    'PSA' => ['checked' => 'psa'],
+                    'HBsAg' => ['checked' => 'hbsag'],
+                    'Proba HBsAg' => ['checked' => 'proba_hbsag'],
+                    'HbA1c' => ['checked' => 'hba1c'],
+                    'Proba HbA1c' => ['checked' => 'proba_hba1c'],
+
+                    'Urograma' => ['checked' => 'urograma', 'text' => 'rezultat_urograma_text', 'file' => 'urograma'],
+                    'Proba urograma' => ['checked' => 'proba_urograma'],
+                    'Coprologia' => [
+                        'checked' => 'coprologia',
+                        'text' => 'rezultat_coprologia_text',
+                        'file' => 'coprologia',
+                    ],
+                    'Proba coprologia' => ['checked' => 'proba_coprologia'],
+                    'Helminti' => ['checked' => 'helminti'],
+                    'Sange ocult' => ['checked' => 'sangeocult'],
+                    // 'HBsAg' => ['checked'=>'hbsag','text'=>'rezultat_hbsag_text'],
+                    // 'HbA1c' => ['checked'=>'hbA1c','text'=>'rezultat_hbA1c_text'],
+                ];
+            @endphp
+
+            <table border="1" class="table table-bordered table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Câmp</th>
+                        @foreach ($analize_fields as $analiza => $field)
+                            <th>{{ $analiza }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    {{-- Checkbox realizată --}}
+                    <tr>
+                        <td>Realizată</td>
+                        @foreach ($analize_fields as $analiza => $field)
+                            <td>
+                                @if (isset($field['checked']))
+                                    <input type="checkbox" name="{{ $field['checked'] }}"
+                                        {{ $analize?->{$field['checked']} ? 'checked' : '' }}>
+                                @endif
+                            </td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td>Rezultat text</td>
+                        @foreach ($analize_fields as $analiza => $field)
+                            <td>
+                                @if (isset($field['text']))
+                                    <textarea class="form-control" name="{{ $field['text'] }}">{{ $analize?->{$field['text']} }}</textarea>
+                                @endif
+                            </td>
+                        @endforeach
+                    </tr>
+
+                    {{-- Rezultat fișier --}}
+                    <tr>
+                        <td>Rezultat fișier</td>
+                        @foreach ($analize_fields as $analiza => $field)
+                            <td>
+                                @if (isset($field['file']))
+                                    <input type="file" class="form-control" name="rezultat_{{ $field['file'] }}_file">
+                                    @if ($analize && $analize->fisiere->where('tip_rezultat', $field['file'])->count())
+                                        <ul>
+                                            @foreach ($analize->fisiere->where('tip_rezultat', $field['file']) as $f)
+                                                <br>
+                                                <li id="file-{{ $f->id }}">
+                                                    {{-- <a href="{{ asset('storage/' . $f->fisier) }}"
+                                                        target="_blank">{{ $f->fisier }}</a> --}}
+                                                    <span
+                                                        style="border-right: 1px solid grey; padding-right: 5px">{{ $f->created_at->format('Y-m-d') }}</span>
+                                                    <a href="{{ asset('storage/' . $f->fisier) }}" target="_blank"
+                                                        style="border-right: 1px solid grey">
+                                                        <i class="fa-solid fa-file-pdf" title="click pentru vizualizare"
+                                                            style="font-size: 25px"></i></a>
+                                                    <button type="button" class="btn btn-danger btn-sm delete-file"
+                                                        data-id="{{ $f->id }}">Șterge</button>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                @endif
+                            </td>
+                        @endforeach
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <button type="submit" class="btn btn-primary mt-2">Salvează</button>
+        </form>
+        <br>
+        {{-- </div> --}}
+    @endif
+    <hr>
+    <br>
+    <table border="1" width="100%" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Pacient</th>
+                @foreach ($columns as $col)
+                    @if (!in_array($col, ['id', 'pacient_id', 'created_at', 'updated_at']))
+                        <th>{{ ucfirst(str_replace('_', ' ', $col)) }}</th>
+                    @endif
+                @endforeach
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($laborator as $lab)
+                <tr>
+                    <td>{{ $lab->id }}</td>
+                    <td>{{ $lab->pacient->numele }} {{ $lab->pacient->prenumele }}</td>
+                    @foreach ($columns as $col)
+                        @if (!in_array($col, ['id', 'pacient_id', 'created_at', 'updated_at']))
+                            <td>
+                                @php $value = $lab->$col; @endphp
+                                @if (is_bool($value) || in_array($value, [0, 1]))
+                                    {!! $value ? '✅' : '❌' !!}
+                                @elseif ($value instanceof \Carbon\Carbon || strtotime($value))
+                                    {{ \Carbon\Carbon::parse($value)->format('Y-m-d') }}
+                                @else
+                                    {{ $value }}
+                                @endif
+                            </td>
+                        @endif
+                    @endforeach
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{ $laborator->links() }}
+
+    <div class="pagination-container">
+        {{ $laborator->links() }}
+    </div>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const deleteButtons = document.querySelectorAll('.delete-file');
-
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const fileId = this.getAttribute('data-id');
-
                     if (!confirm('Sigur vrei să ștergi acest fișier?')) return;
 
                     fetch(`/laborator/fisiere/${fileId}`, {
@@ -363,56 +335,21 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Accept': 'application/json'
                             }
-                        })
-                        .then(response => response.json())
+                        }).then(res => res.json())
                         .then(data => {
                             if (data.success) {
-                                // eliminăm elementul din DOM
                                 const li = document.getElementById(`file-${fileId}`);
                                 if (li) li.remove();
                             } else {
                                 alert('Eroare la ștergere!');
                             }
-                        })
-                        .catch(error => {
-                            console.error('Eroare:', error);
+                        }).catch(err => {
                             alert('Eroare la ștergere!');
+                            console.error(err);
                         });
                 });
             });
         });
-
-        // search
-        // document.getElementById('search').addEventListener('keyup', function() {
-        //     let query = this.value;
-        //     fetch(`{{ route('laborator.create') }}?search=${query}`)
-        //         .then(response => response.text())
-        //         .then(html => {
-        //             // Înlocuiește doar selectul cu lista de pacienți
-        //             let parser = new DOMParser();
-        //             let doc = parser.parseFromString(html, 'text/html');
-        //             document.getElementById('pacient_id').innerHTML = doc.getElementById('pacient_id')
-        //             .innerHTML;
-        //         });
-        // });
-
-        //     document.addEventListener('DOMContentLoaded', function() {
-        //     const searchForm = document.getElementById('searchForm');
-        //     const pacientSelect = document.getElementById('pacient_id');
-
-        //     searchForm.addEventListener('submit', function() {
-        //         // folosim setTimeout ca să așteptăm ca pagina să se reîncarce și selectul să fie populat
-        //         setTimeout(() => {
-        //             if (pacientSelect.options.length > 2) { // mai mult de 1 opțiune + placeholder
-        //                 pacientSelect.size = pacientSelect.options.length; // afișează toate opțiunile
-        //                 pacientSelect.focus();
-        //             }
-        //         }, 100);
-        //     });
-        // });
     </script>
 
-
-
-
-
+@endsection

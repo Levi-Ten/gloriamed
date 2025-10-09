@@ -16,22 +16,14 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 </head>
 
 <body>
-    {{-- <header>
-        @yield('header')
-    </header> --}}
     @include('components.header')
     <main>
         @yield('content')
     </main>
-
-    {{-- <footer>
-        @yield('footer')
-    </footer> --}}
 </body>
 
 </html>

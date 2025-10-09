@@ -27,9 +27,23 @@ Route::middleware(['auth.cnam'])->group(function () {
     Route::post('/laborator', [LaboratorController::class, 'store'])->name('laborator.store');
     Route::delete('/laborator/fisiere/{id}', [LaboratorController::class, 'destroyFisier'])->name('laborator.fisiere.destroy');
     Route::get('/laborator/show', [LaboratorController::class, 'showAll'])->name('laborator.show');
+    // Route::get('/laborator', [LaboratorController::class, 'index'])->name('laborator.index');
+
+    Route::post('/laborator/store-multiple', [LaboratorController::class, 'storeMultiple'])->name('laborator.storeMultiple');
+    // Route::get('/laborator/search-pacienti', [LaboratorController::class, 'searchPacienti'])->name('laborator.searchPacienti');
+
+    Route::get('/laborator/create', [LaboratorController::class, 'create'])->name('laborator.create');
+
 
 
     Route::get('/proceduri', [ProceduraController::class, 'index'])->name('proceduri.index');
     Route::get('/proceduri/create', [ProceduraController::class, 'create'])->name('proceduri.create');
     Route::post('/proceduri', [ProceduraController::class, 'store'])->name('proceduri.store');
+
+    Route::post('/proceduri/update-bulk', [ProceduraController::class, 'updateBulk'])->name('proceduri.updateBulk');
+    Route::get('/proceduri/destroy/{id}', [ProceduraController::class, 'destroy'])->name('proceduri.destroy');
+    // Route::delete('/proceduri/{id}', [ProceduraController::class, 'destroy'])->name('proceduri.destroy');
+
+
+
 });
