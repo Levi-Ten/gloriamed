@@ -7,6 +7,11 @@
     <div class="container">
         <h2>Lista pacienți CNAM</h2>
         <br><br>
+        @error('idnp')
+            <div style="color: red">
+                {{ $message }}
+            </div>
+        @enderror
         <table class="patients-table" id="patientsTable" border="1">
             <thead>
                 <tr>
@@ -34,22 +39,34 @@
                             @csrf
                             @method('PUT')
                             <td>{{ $r->id }}</td>
-                            <td><input class="input-field" type="text" name="numele" value="{{ $r->numele }}" required></td>
-                            <td><input class="input-field" type="text" name="prenumele" value="{{ $r->prenumele }}" required></td>
+                            <td><input class="input-field" type="text" name="numele" value="{{ $r->numele }}"
+                                    required></td>
+                            <td><input class="input-field" type="text" name="prenumele" value="{{ $r->prenumele }}"
+                                    required></td>
                             <td><input class="input-field" type="date" name="data_nasterii"
                                     value="{{ $r->data_nasterii }}" required></td>
-                            <td><input class="input-field" type="text" name="idnp" value="{{ $r->idnp }}" required></td>
-                            <td><input class="input-field" type="text" name="localitatea" value="{{ $r->localitatea }}">
+                            <td>
+                                <input class="input-field" type="text" name="idnp"
+                                    value="{{ $r->idnp }}"required>
                             </td>
-                            <td><input class="input-field" type="text" name="sectorul" value="{{ $r->sectorul }}"></td>
-                            <td><input class="input-field" type="text" name="strada" value="{{ $r->strada }}"></td>
+
+                            <td><input class="input-field" type="text" name="localitatea" value="{{ $r->localitatea }}"
+                                    style="width:60px;">
+                            </td>
+                            <td><input class="input-field" type="text" name="sectorul" value="{{ $r->sectorul }}"
+                                    style="width:60px;"></td>
+                            <td><input class="input-field" type="text" name="strada" value="{{ $r->strada }}"
+                                    style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="casa" value="{{ $r->casa }}"
                                     style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="blocul" value="{{ $r->blocul }}"
                                     style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="apartamentul"
                                     value="{{ $r->apartamentul }}" style="width:60px;"></td>
-                            <td><input class="input-field readonly" type="text" value="{{ $r->full_info }}" readonly>
+                            <td>
+                                {{-- <input class="input-field readonly" type="text" value="{{ $r->full_info }}" readonly> --}}
+                                <input class="input-field readonly" type="text" value="{{ $r->full_info }}" readonly
+                                    style="width: {{ strlen($r->full_info) + 1 }}ch;">
                             </td>
                             <td class="actions">
                                 <button type="submit" class="">💾 Salvează</button>
@@ -69,16 +86,19 @@
 
             <!-- Rând nou pentru adăugare -->
             <tr id="newPatientRow" class="new-row hidden">
-                <form method="POST" action="{{ route('cnam.store') }}">
+                <form method="POST" action="{{ route('cnam.store') }}" id="cnamForm">
                     @csrf
                     <td>—</td>
                     <td><input class="input-field" type="text" name="numele" required></td>
                     <td><input class="input-field" type="text" name="prenumele" required></td>
                     <td><input class="input-field" type="date" name="data_nasterii" required></td>
-                    <td><input class="input-field" type="text" name="idnp" required></td>
-                    <td><input class="input-field" type="text" name="localitatea"></td>
-                    <td><input class="input-field" type="text" name="sectorul"></td>
-                    <td><input class="input-field" type="text" name="strada"></td>
+                    <td>
+                        <input class="input-field" type="text" name="idnp" id="idnp1" required>
+                        <span id="charCount"></span>
+                    </td>
+                    <td><input class="input-field" type="text" name="localitatea" style="width:60px;"></td>
+                    <td><input class="input-field" type="text" name="sectorul" style="width:60px;"></td>
+                    <td><input class="input-field" type="text" name="strada" style="width:60px;"></td>
                     <td><input class="input-small" type="text" name="casa" style="width:60px;"></td>
                     <td><input class="input-small" type="text" name="blocul" style="width:60px;"></td>
                     <td><input class="input-small" type="text" name="apartamentul" style="width:60px;"></td>
@@ -94,6 +114,18 @@
 
         <!-- Script -->
         <script>
+            const input = document.getElementById('idnp1');
+            const charCount = document.getElementById('charCount');
+
+            input.addEventListener('input', () => {
+                if (input.value.length > 13) {
+                    charCount.textContent = "prea multe caractere";
+
+                } else {
+                    charCount.textContent = input.value.length;
+                }
+            });
+
             document.getElementById('addPatientBtn').addEventListener('click', function() {
                 document.getElementById('newPatientRow').classList.remove('hidden');
                 this.disabled = true;

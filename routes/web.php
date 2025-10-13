@@ -44,6 +44,8 @@ Route::middleware(['auth.cnam'])->group(function () {
     Route::get('/proceduri/destroy/{id}', [ProceduraController::class, 'destroy'])->name('proceduri.destroy');
     // Route::delete('/proceduri/{id}', [ProceduraController::class, 'destroy'])->name('proceduri.destroy');
 
-
-
+    // Darea de seamă - Analize pacienți
+    Route::get('/darea-de-seama', [CnamController::class, 'dareaDeSeama'])->name('cnam.dareaDeSeama');
+    Route::get('/darea-de-seama/dates/{pacientId}', [CnamController::class, 'getDates']);
+    Route::get('/darea-de-seama/analize/{pacientId}/{data}', [CnamController::class, 'getAnalize']);
 });

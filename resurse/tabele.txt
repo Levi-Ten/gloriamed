@@ -310,3 +310,42 @@ CREATE TABLE `proceduri` (
   `updated_at` TIMESTAMP NULL DEFAULT NULL,
   CONSTRAINT `proceduri_pacient_id_foreign` FOREIGN KEY (`pacient_id`) REFERENCES `cnam`(`id`) ON DELETE CASCADE
 );
+
+
+  `hemograma`
+  `vsh` 
+  `coagulograma` 
+urograma
+imunologia
+antistreptolizina_o
+factor_reumatic
+pcr
+tt3
+tt4
+tsh
+psa
+proba_hba1c
+biochimia
+magneziu
+calciu
+ferum
+ast
+alfa_amilaza
+lipaza
+ureea
+creatina
+ldh
+glucoza
+hba1c
+proteina_totala
+albumina
+trigliceride
+colesterol_total
+hdl_colesterol
+ldl_colesterol
+bilirubina_directa
+acid_uric
+ggt
+coprologia
+helminti
+sange_ocult

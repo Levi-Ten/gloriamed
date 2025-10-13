@@ -29,11 +29,11 @@ class Cnam extends Model
     protected static function booted()
     {
         static::creating(function ($cnam) {
-            $cnam->full_info = $cnam->numele . ' ' . $cnam->prenumele . ' ' . $cnam->data_nasterii;
+            $cnam->full_info = $cnam->numele . ' ' . $cnam->prenumele . ' ' . $cnam->data_nasterii . ' ' . $cnam->idnp;
         });
 
         static::updating(function ($cnam) {
-            $cnam->full_info = $cnam->numele . ' ' . $cnam->prenumele . ' ' . $cnam->data_nasterii;
+            $cnam->full_info = $cnam->numele . ' ' . $cnam->prenumele . ' ' . $cnam->data_nasterii. ' ' . $cnam->idnp;
         });
     }
     public function laboratorPacienti()
