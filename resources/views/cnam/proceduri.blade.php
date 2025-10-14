@@ -84,7 +84,7 @@
                                 @foreach ($analizeFields as $field)
                                     <td>
                                         <input type="checkbox" name="proceduri[{{ $p->id }}][{{ $field }}]"
-                                            {{ $proc && $proc->$field ? 'checked' : '' }}>
+                                            {{ $proc && $proc->$field ? 'checked' : '' }} class="readonly-checkbox">
                                     </td>
                                 @endforeach
                                 {{-- <td>
@@ -101,7 +101,7 @@
                 </table>
             </div>
             <br>
-            <button type="submit" class="btn btn-primary mt-3">Salvează modificările</button>
+            {{-- <button type="submit" class="btn btn-primary mt-3">Salvează modificările</button> --}}
         </form>
     </div>
     <script>

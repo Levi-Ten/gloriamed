@@ -83,7 +83,6 @@
                     </tr>
                 @endforeach
             </tbody>
-
             <!-- Rând nou pentru adăugare -->
             <tr id="newPatientRow" class="new-row hidden">
                 <form method="POST" action="{{ route('cnam.store') }}" id="cnamForm">
@@ -105,7 +104,7 @@
                     <td><input class="input-field readonly" type="text" readonly placeholder="—"></td>
                     <td class="actions">
                         <button type="submit" class="">💾 Salvează</button>
-                        <button type="button" id="cancelAddBtn" class="">🗑 Șterge</button>
+                        {{-- <button type="button" id="cancelAddBtn" class="">🗑 Șterge</button> --}}
                     </td>
                     <td></td>
                 </form>

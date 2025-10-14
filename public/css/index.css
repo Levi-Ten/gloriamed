@@ -72,7 +72,7 @@ a{
 
 /* Tabel */
 .table {
-    width: 100%;
+    /* width: 100%; */
     border-collapse: collapse;
 }
 
@@ -107,4 +107,10 @@ a{
     overflow-x: auto;
 }
 
+.readonly-checkbox {
+    pointer-events: none; 
+    accent-color: #007bff; 
+    cursor: not-allowed;
+    opacity: 0.9;
+}
 

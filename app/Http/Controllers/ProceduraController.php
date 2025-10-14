@@ -12,19 +12,20 @@ class ProceduraController extends Controller
 {
     public function index()
     {
+        // dd(123);
         $pacienti = Cnam::with('procedura')
             ->whereHas('procedura', function ($q) {
                 // $q->where('toate_procedurile', 0);
                 $q->where(function ($q1) {
-                    $q1->where('hemograma', 0)
-                        ->orWhere('urograma', 0)
-                        ->orWhere('biochimia', 0)
-                        ->orWhere('imunologia', 0)
-                        ->orWhere('hba1c', 0)
-                        ->orWhere('hbsag', 0)
-                        ->orWhere('mrs_hiv', 0)
-                        ->orWhere('afp', 0)
-                        ->orWhere('hemostaza', 0);
+                    $q1->where('hemograma', 1)
+                        ->orWhere('urograma', 1)
+                        ->orWhere('biochimia', 1)
+                        ->orWhere('imunologia', 1)
+                        ->orWhere('hba1c', 1)
+                        ->orWhere('hbsag', 1)
+                        ->orWhere('mrs_hiv', 1)
+                        ->orWhere('afp', 1)
+                        ->orWhere('hemostaza', 1);
                 });
             })
             ->orWhereDoesntHave('procedura')

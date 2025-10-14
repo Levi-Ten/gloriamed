@@ -110,172 +110,182 @@
             </form>
         </div>
     </div>
+    <hr>
+    <div class="container-pr">
+        @if ($pacient_id)
+            {{-- <div class="container-laborator"> --}}
+            <form method="POST" action="{{ route('laborator.store') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="laborator_info">
+                    <input type="hidden" name="pacient_id" value="{{ $pacient_id }}">
 
-    @if ($pacient_id)
-        {{-- <div class="container-laborator"> --}}
-        <form method="POST" action="{{ route('laborator.store') }}" enctype="multipart/form-data">
-            @csrf
-            <input type="hidden" name="pacient_id" value="{{ $pacient_id }}">
+                    <p>Analize pentru: <b>{{ $pacientSelectat->numele }} {{ $pacientSelectat->prenumele }}</b></p>
+                    <p>Cod pacient: <b> {{ $pacient_id }}</b></p>
+                    <br>
+                    <span>Data analizei: <b>{{ $data_analizei }}</b></span>
+                    <br>
+                    (selecteaza data analizei, daca nu este selectata, se va prelua automat data actuala)
+                    <input type="date" name="data_analizei" value="{{ old('data_analizei', date('Y-m-d')) }}" required>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-primary pf">Salvează</button>
+                    {{-- <br>
+                    <br>
+                    <br> --}}
+                </div>
+                @php
+                    $analize_fields = [
+                        'Hemograma' => [
+                            'checked' => 'hemograma',
+                            'text' => 'rezultat_hemograma_text',
+                            'file' => 'hemograma',
+                        ],
+                        'Proba hemograma' => ['checked' => 'proba_hemograma'],
+                        'VSH' => ['checked' => 'vsh', 'text' => 'rezultat_vsh_text'],
+                        'Coagulograma' => ['checked' => 'coagulograma', 'text' => 'rezultat_coagulograma_text'],
+                        'Hemostaza' => ['checked' => 'hemostaza'],
+                        'Proba hemostaza' => ['checked' => 'proba_hemostaza'],
+                        'MRS HIV' => ['checked' => 'mrs_hiv', 'proba' => 'proba_mrs_hiv'],
+                        'Proba mrs hiv' => ['checked' => 'proba_mrs_hiv'],
+                        'Biochimia' => [
+                            'checked' => 'biochimia',
+                            'text' => 'rezultat_biochimia_text',
+                            'file' => 'biochimia',
+                        ],
+                        'Proba biochimia' => ['checked' => 'proba_biochimia'],
+                        'Colesterol total' => ['checked' => 'coletotal'],
+                        'HDL-colesterol' => ['checked' => 'hdlcoletotal'],
+                        'LDL-colesterol' => ['checked' => 'ldlcoletotal'],
+                        'Trigliceride' => ['checked' => 'trigliceride'],
+                        'Uree' => ['checked' => 'uree'],
+                        'Creatina' => ['checked' => 'creatina'],
+                        'AFP' => ['checked' => 'afp'],
+                        'Proba afp' => ['checked' => 'proba_afp'],
+                        'Glucoza' => ['checked' => 'glucoza'],
+                        'ALT' => ['checked' => 'alt'],
+                        'AST' => ['checked' => 'ast'],
+                        'Alfa-amilaza' => ['checked' => 'alfaamilaza'],
+                        'Fosfataza alcalina' => ['checked' => 'fosfatazaalcalina'],
+                        'LDH lactat dehidratat' => ['checked' => 'ldhlactatdehidratat'],
+                        'Bilirubina totala' => ['checked' => 'bilirubinatotala'],
+                        'Bilirubina directa' => ['checked' => 'bilirubinadirecta'],
+                        'Lipaza' => ['checked' => 'lipaza'],
+                        'Proteina tottala' => ['checked' => 'proteinatottala'],
+                        'Albumina (ser)' => ['checked' => 'albumina'],
+                        'Acid uric' => ['checked' => 'aciduric'],
+                        'GGT' => ['checked' => 'ggt'],
+                        'Magneziu' => ['checked' => 'magneziu'],
+                        'Calciu' => ['checked' => 'calciu'],
+                        'Ferum' => ['checked' => 'ferum'],
 
-            <p>Analize pentru: <b>{{ $pacientSelectat->numele }} {{ $pacientSelectat->prenumele }}</b></p>
-            <p>Cod pacient: <b> {{ $pacient_id }}</b></p>
-            <br>
-            <span>Data analizei: <b>{{ $data_analizei }}</b></span>
-            <br>
-            (selecteaza data analizei, daca nu este selectata, se va prelua automat data actuala)
-            <input type="date" name="data_analizei" value="{{ old('data_analizei', date('Y-m-d')) }}" required>
-            <br>
-            <br>
+                        'Imunologia' => [
+                            'checked' => 'imunologia',
+                            'text' => 'rezultat_imunologia_text',
+                            'file' => 'imunologia',
+                        ],
+                        'Proba imunologia' => ['checked' => 'proba_imunologia'],
+                        'Antistreptolizina-O' => ['checked' => 'antistreptolizinao'],
+                        'Factor reumatic' => ['checked' => 'factorreumatic'],
+                        'PCR' => ['checked' => 'pcr'],
+                        'TT3' => ['checked' => 'tt3'],
+                        'TT4' => ['checked' => 'tt4'],
+                        'TSH' => ['checked' => 'tsh'],
+                        'PSA' => ['checked' => 'psa'],
+                        'HBsAg' => ['checked' => 'hbsag'],
+                        'Proba HBsAg' => ['checked' => 'proba_hbsag'],
+                        'HbA1c' => ['checked' => 'hba1c'],
+                        'Proba HbA1c' => ['checked' => 'proba_hba1c'],
 
-            @php
-                $analize_fields = [
-                    'Hemograma' => [
-                        'checked' => 'hemograma',
-                        'text' => 'rezultat_hemograma_text',
-                        'file' => 'hemograma',
-                    ],
-                    'Proba hemograma' => ['checked' => 'proba_hemograma'],
-                    'VSH' => ['checked' => 'vsh', 'text' => 'rezultat_vsh_text'],
-                    'Coagulograma' => ['checked' => 'coagulograma', 'text' => 'rezultat_coagulograma_text'],
-                    'Hemostaza' => ['checked' => 'hemostaza'],
-                    'Proba hemostaza' => ['checked' => 'proba_hemostaza'],
-                    'MRS HIV' => ['checked' => 'mrs_hiv', 'proba' => 'proba_mrs_hiv'],
-                    'Proba mrs hiv' => ['checked' => 'proba_mrs_hiv'],
-                    'Biochimia' => [
-                        'checked' => 'biochimia',
-                        'text' => 'rezultat_biochimia_text',
-                        'file' => 'biochimia',
-                    ],
-                    'Proba biochimia' => ['checked' => 'proba_biochimia'],
-                    'Colesterol total' => ['checked' => 'coletotal'],
-                    'HDL-colesterol' => ['checked' => 'hdlcoletotal'],
-                    'LDL-colesterol' => ['checked' => 'ldlcoletotal'],
-                    'Trigliceride' => ['checked' => 'trigliceride'],
-                    'Uree' => ['checked' => 'uree'],
-                    'Creatina' => ['checked' => 'creatina'],
-                    'AFP' => ['checked' => 'afp'],
-                    'Proba afp' => ['checked' => 'proba_afp'],
-                    'Glucoza' => ['checked' => 'glucoza'],
-                    'ALT' => ['checked' => 'alt'],
-                    'AST' => ['checked' => 'ast'],
-                    'Alfa-amilaza' => ['checked' => 'alfaamilaza'],
-                    'Fosfataza alcalina' => ['checked' => 'fosfatazaalcalina'],
-                    'LDH lactat dehidratat' => ['checked' => 'ldhlactatdehidratat'],
-                    'Bilirubina totala' => ['checked' => 'bilirubinatotala'],
-                    'Bilirubina directa' => ['checked' => 'bilirubinadirecta'],
-                    'Lipaza' => ['checked' => 'lipaza'],
-                    'Proteina tottala' => ['checked' => 'proteinatottala'],
-                    'Albumina (ser)' => ['checked' => 'albumina'],
-                    'Acid uric' => ['checked' => 'aciduric'],
-                    'GGT' => ['checked' => 'ggt'],
-                    'Magneziu' => ['checked' => 'magneziu'],
-                    'Calciu' => ['checked' => 'calciu'],
-                    'Ferum' => ['checked' => 'ferum'],
+                        'Urograma' => [
+                            'checked' => 'urograma',
+                            'text' => 'rezultat_urograma_text',
+                            'file' => 'urograma',
+                        ],
+                        'Proba urograma' => ['checked' => 'proba_urograma'],
+                        'Coprologia' => [
+                            'checked' => 'coprologia',
+                            'text' => 'rezultat_coprologia_text',
+                            'file' => 'coprologia',
+                        ],
+                        'Proba coprologia' => ['checked' => 'proba_coprologia'],
+                        'Helminti' => ['checked' => 'helminti'],
+                        'Sange ocult' => ['checked' => 'sangeocult'],
+                        // 'HBsAg' => ['checked'=>'hbsag','text'=>'rezultat_hbsag_text'],
+                        // 'HbA1c' => ['checked'=>'hbA1c','text'=>'rezultat_hbA1c_text'],
+                    ];
+                @endphp
 
-                    'Imunologia' => [
-                        'checked' => 'imunologia',
-                        'text' => 'rezultat_imunologia_text',
-                        'file' => 'imunologia',
-                    ],
-                    'Proba imunologia' => ['checked' => 'proba_imunologia'],
-                    'Antistreptolizina-O' => ['checked' => 'antistreptolizinao'],
-                    'Factor reumatic' => ['checked' => 'factorreumatic'],
-                    'PCR' => ['checked' => 'pcr'],
-                    'TT3' => ['checked' => 'tt3'],
-                    'TT4' => ['checked' => 'tt4'],
-                    'TSH' => ['checked' => 'tsh'],
-                    'PSA' => ['checked' => 'psa'],
-                    'HBsAg' => ['checked' => 'hbsag'],
-                    'Proba HBsAg' => ['checked' => 'proba_hbsag'],
-                    'HbA1c' => ['checked' => 'hba1c'],
-                    'Proba HbA1c' => ['checked' => 'proba_hba1c'],
-
-                    'Urograma' => ['checked' => 'urograma', 'text' => 'rezultat_urograma_text', 'file' => 'urograma'],
-                    'Proba urograma' => ['checked' => 'proba_urograma'],
-                    'Coprologia' => [
-                        'checked' => 'coprologia',
-                        'text' => 'rezultat_coprologia_text',
-                        'file' => 'coprologia',
-                    ],
-                    'Proba coprologia' => ['checked' => 'proba_coprologia'],
-                    'Helminti' => ['checked' => 'helminti'],
-                    'Sange ocult' => ['checked' => 'sangeocult'],
-                    // 'HBsAg' => ['checked'=>'hbsag','text'=>'rezultat_hbsag_text'],
-                    // 'HbA1c' => ['checked'=>'hbA1c','text'=>'rezultat_hbA1c_text'],
-                ];
-            @endphp
-
-            <table border="1" class="table table-bordered table-striped mt-3">
-                <thead>
-                    <tr>
-                        <th>Câmp</th>
+                <table border="1" class="table table-bordered table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Analiză</th>
+                            <th>Realizată</th>
+                            <th>Rezultat text</th>
+                            <th>Rezultat fișier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @foreach ($analize_fields as $analiza => $field)
-                            <th>{{ $analiza }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    {{-- Checkbox realizată --}}
-                    <tr>
-                        <td>Realizată</td>
-                        @foreach ($analize_fields as $analiza => $field)
-                            <td>
-                                @if (isset($field['checked']))
-                                    <input type="checkbox" name="{{ $field['checked'] }}"
-                                        {{ $analize?->{$field['checked']} ? 'checked' : '' }}>
-                                @endif
-                            </td>
-                        @endforeach
-                    </tr>
-                    <tr>
-                        <td>Rezultat text</td>
-                        @foreach ($analize_fields as $analiza => $field)
-                            <td>
-                                @if (isset($field['text']))
-                                    <textarea class="form-control" name="{{ $field['text'] }}">{{ $analize?->{$field['text']} }}</textarea>
-                                @endif
-                            </td>
-                        @endforeach
-                    </tr>
+                            <tr class="hover_effect {{ Str::contains(strtolower($analiza), 'proba') ? 'row-proba' : '' }}">
 
-                    {{-- Rezultat fișier --}}
-                    <tr>
-                        <td>Rezultat fișier</td>
-                        @foreach ($analize_fields as $analiza => $field)
-                            <td>
-                                @if (isset($field['file']))
-                                    <input type="file" class="form-control" name="rezultat_{{ $field['file'] }}_file">
-                                    @if ($analize && $analize->fisiere->where('tip_rezultat', $field['file'])->count())
-                                        <ul>
-                                            @foreach ($analize->fisiere->where('tip_rezultat', $field['file']) as $f)
-                                                <br>
-                                                <li id="file-{{ $f->id }}">
-                                                    {{-- <a href="{{ asset('storage/' . $f->fisier) }}"
-                                                        target="_blank">{{ $f->fisier }}</a> --}}
-                                                    <span
-                                                        style="border-right: 1px solid grey; padding-right: 5px">{{ $f->created_at->format('Y-m-d') }}</span>
-                                                    <a href="{{ asset('storage/' . $f->fisier) }}" target="_blank"
-                                                        style="border-right: 1px solid grey">
-                                                        <i class="fa-solid fa-file-pdf" title="click pentru vizualizare"
-                                                            style="font-size: 25px"></i></a>
-                                                    <button type="button" class="btn btn-danger btn-sm delete-file"
-                                                        data-id="{{ $f->id }}">Șterge</button>
-                                                </li>
-                                            @endforeach
-                                        </ul>
+                                {{-- @if (Str::contains(strtolower($analiza), 'proba')) style="background-color: #f9f1a5;" @endif  --}}
+                                {{-- > --}}
+                                <td>{{ $analiza }}</td>
+
+                                {{-- Realizată --}}
+                                <td>
+                                    @if (isset($field['checked']))
+                                        <input type="checkbox" name="{{ $field['checked'] }}"
+                                            {{ $analize?->{$field['checked']} ? 'checked' : '' }} style="cursor: pointer">
                                     @endif
-                                @endif
-                            </td>
+                                </td>
+
+                                {{-- Rezultat text --}}
+                                <td>
+                                    @if (isset($field['text']))
+                                        <textarea class="form-control" name="{{ $field['text'] }}">{{ $analize?->{$field['text']} }}</textarea>
+                                    @endif
+                                </td>
+
+                                {{-- Rezultat fișier --}}
+                                <td>
+                                    @if (isset($field['file']))
+                                        <input type="file" class="form-control"
+                                            name="rezultat_{{ $field['file'] }}_file">
+                                        @if ($analize && $analize->fisiere->where('tip_rezultat', $field['file'])->count())
+                                            <ul>
+                                                @foreach ($analize->fisiere->where('tip_rezultat', $field['file']) as $f)
+                                                    <li id="file-{{ $f->id }}">
+                                                        <span style="border-right: 1px solid grey; padding-right: 5px">
+                                                            {{ $f->created_at->format('Y-m-d') }}
+                                                        </span>
+                                                        <a href="{{ asset('storage/' . $f->fisier) }}" target="_blank"
+                                                            style="border-right: 1px solid grey">
+                                                            <i class="fa-solid fa-file-pdf" title="click pentru vizualizare"
+                                                                style="font-size: 25px"></i>
+                                                        </a>
+                                                        <button type="button" class="btn btn-danger btn-sm delete-file"
+                                                            data-id="{{ $f->id }}">
+                                                            Șterge
+                                                        </button>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    @endif
+                                </td>
+                            </tr>
                         @endforeach
-                    </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+
+                <br>
+                {{-- <button type="submit" class="btn btn-primary pf">Salvează</button> --}}
+            </form>
             <br>
-            <button type="submit" class="btn btn-primary mt-2">Salvează</button>
-        </form>
-        <br>
-        {{-- </div> --}}
-    @endif
+            {{-- </div> --}}
+        @endif
+    </div>
     <hr>
     <br>
     <table border="1" width="100%" class="table table-bordered table-striped">
