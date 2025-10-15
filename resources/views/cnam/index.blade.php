@@ -58,7 +58,7 @@
                             <td><input class="input-field" type="text" name="strada" value="{{ $r->strada }}"
                                     style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="casa" value="{{ $r->casa }}"
-                                    style="width:60px;"></td>
+           ~                         style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="blocul" value="{{ $r->blocul }}"
                                     style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="apartamentul"
