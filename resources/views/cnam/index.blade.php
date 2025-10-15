@@ -12,6 +12,20 @@
                 {{ $message }}
             </div>
         @enderror
+
+        <div style="margin: 20px 0;">
+            <input type="search" id="searchInput" placeholder="Caută pacient după nume, prenume sau IDNP" class="form-control">
+            <button id="searchBtn" class="btn btn-primary mt-2">Caută</button>
+        </div>
+        {{-- Modal pentru afișarea informațiilor pacientului --}}
+        <div id="patientModal" class="modal hidden">
+            <div class="modal-content">
+                <span id="closeModal" class="close">X</span>
+                <h3>Detalii pacient</h3>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+
         <table class="patients-table" id="patientsTable" border="1">
             <thead>
                 <tr>
@@ -58,7 +72,7 @@
                             <td><input class="input-field" type="text" name="strada" value="{{ $r->strada }}"
                                     style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="casa" value="{{ $r->casa }}"
-           ~                         style="width:60px;"></td>
+                                    style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="blocul" value="{{ $r->blocul }}"
                                     style="width:60px;"></td>
                             <td><input class="input-small" type="text" name="apartamentul"
@@ -111,8 +125,52 @@
             </tr>
         </table>
 
+       
         <!-- Script -->
         <script>
+            document.getElementById('searchBtn').addEventListener('click', function() {
+                const query = document.getElementById('searchInput').value.trim();
+                if (!query) return alert("Introduceți numele pacientului!");
+
+                fetch(`{{ route('cnam.search') }}?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            document.getElementById('modalBody').innerHTML =
+                                `<p style="color:red;">${data.message}</p>`;
+                        } else {
+                            let html = '';
+                            data.forEach(p => {
+                                html += `
+                    <div style="border-bottom:1px solid #ccc; margin-bottom:10px; padding-bottom:5px;">
+                        <p style="display:flex;"><strong>Nume:</strong> ${p.numele}</p>
+                        <p style="display:flex;"><strong>Prenume:</strong> ${p.prenumele}</p>
+                        <p style="display:flex;"><strong>Data nașterii:</strong> ${p.data_nasterii}</p>
+                        <p style="display:flex;"><strong>IDNP:</strong> ${p.idnp}</p>
+                        <p style="display:flex;"><strong>Adresa:</strong> ${p.localitatea || ''}, ${p.strada || ''}, ${p.casa || ''}</p>
+                        <p style="display:flex;"><strong>Full Info:</strong> ${p.full_info || '-'}</p>
+                    </div>`;
+                            });
+                            document.getElementById('modalBody').innerHTML = html;
+                        }
+                        document.getElementById('patientModal').style.display = 'block';
+                    })
+
+            });
+
+            // Închidere modal
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('patientModal').style.display = 'none';
+            });
+
+            // Închide modal la click în afara ferestrei
+            window.addEventListener('click', function(e) {
+                if (e.target === document.getElementById('patientModal')) {
+                    document.getElementById('patientModal').style.display = 'none';
+                }
+            });
+
+
             const input = document.getElementById('idnp1');
             const charCount = document.getElementById('charCount');
 

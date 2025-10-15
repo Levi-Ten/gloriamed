@@ -32,18 +32,20 @@ class CnamController extends Controller
      */
     public function store(Request $request, Cnam $cnam)
     {
-        $request->validate([
-            'numele' => 'required|string|max:255',
-            'prenumele' => 'required|string|max:255',
-            'data_nasterii' => 'required|date',
-            // 'idnp' => 'required|string|max:20|unique:cnam',
-            'idnp' => 'required|regex:/^[0-9]{13}$/|unique:cnam,idnp,' . $cnam->id,
-        ], [
-            'idnp.unique' => 'Acest IDNP există deja în sistem.',
-            'idnp.regex' => 'IDNP-ul trebuie sa fie format din 13 cifre',
-            'idnp.required' => 'Câmpul IDNP este obligatoriu.',
-        ]
-    );
+        $request->validate(
+            [
+                'numele' => 'required|string|max:255',
+                'prenumele' => 'required|string|max:255',
+                'data_nasterii' => 'required|date',
+                // 'idnp' => 'required|string|max:20|unique:cnam',
+                'idnp' => 'required|regex:/^[0-9]{13}$/|unique:cnam,idnp,' . $cnam->id,
+            ],
+            [
+                'idnp.unique' => 'Acest IDNP există deja în sistem.',
+                'idnp.regex' => 'IDNP-ul trebuie sa fie format din 13 cifre',
+                'idnp.required' => 'Câmpul IDNP este obligatoriu.',
+            ]
+        );
 
         Cnam::create($request->all());
 
@@ -71,18 +73,20 @@ class CnamController extends Controller
      */
     public function update(Request $request, Cnam $cnam)
     {
-        $request->validate([
-            'numele' => 'required|string|max:255',
-            'prenumele' => 'required|string|max:255',
-            'data_nasterii' => 'required|date',
-            'idnp' => 'required|regex:/^[0-9]{13}$/|unique:cnam,idnp,' . $cnam->id,
-        ], [
-            'idnp.unique' => 'Acest IDNP există deja în sistem.',
-            'idnp.regex' => 'IDNP-ul trebuie sa fie format din 13 cifre',
-            'idnp.required' => 'Câmpul IDNP este obligatoriu.',
-        ]
-    
-    );
+        $request->validate(
+            [
+                'numele' => 'required|string|max:255',
+                'prenumele' => 'required|string|max:255',
+                'data_nasterii' => 'required|date',
+                'idnp' => 'required|regex:/^[0-9]{13}$/|unique:cnam,idnp,' . $cnam->id,
+            ],
+            [
+                'idnp.unique' => 'Acest IDNP există deja în sistem.',
+                'idnp.regex' => 'IDNP-ul trebuie sa fie format din 13 cifre',
+                'idnp.required' => 'Câmpul IDNP este obligatoriu.',
+            ]
+
+        );
 
         $cnam->update($request->all());
 
@@ -172,4 +176,49 @@ class CnamController extends Controller
 
         return response()->json($analize);
     }
+    // public function search(Request $request)
+    // {
+    //     $query = $request->input('q');
+
+    //     $record = Cnam::where('numele', 'like', "%$query%")
+    //         ->orWhere('prenumele', 'like', "%$query%")
+    //         ->orWhere('idnp', 'like', "%$query%")
+    //         ->limit(10)
+
+    //         ->first();
+
+    //     if ($record) {
+    //         return response()->json($record);
+    //     } else {
+    //         return response()->json(['message' => 'Pacientul nu a fost găsit.'], 404);
+    //     }
+    // }
+    public function search(Request $request)
+{
+    $query = trim($request->input('q'));
+
+    if (!$query) {
+        return response()->json(['message' => 'Introduceți un text pentru căutare.'], 400);
+    }
+
+    // Transformăm căutarea în litere mici pentru compatibilitate
+    $queryLower = mb_strtolower($query);
+
+    // Căutăm potriviri multiple: nume, prenume, combinație nume+prenume, idnp
+    $records = \App\Models\Cnam::whereRaw('LOWER(numele) LIKE ?', ["%{$queryLower}%"])
+        ->orWhereRaw('LOWER(prenumele) LIKE ?', ["%{$queryLower}%"])
+        ->orWhereRaw("LOWER(CONCAT(numele, ' ', prenumele)) LIKE ?", ["%{$queryLower}%"])
+        ->orWhereRaw("LOWER(CONCAT(prenumele, ' ', numele)) LIKE ?", ["%{$queryLower}%"])
+        ->orWhere('idnp', 'like', "%{$query}%")
+        ->orderBy('numele')
+        ->limit(10)
+        ->get();
+
+    if ($records->isNotEmpty()) {
+        return response()->json($records);
+    } else {
+        return response()->json(['message' => 'Nu a fost găsit niciun pacient.'], 404);
+    }
+}
+
 }
