@@ -113,63 +113,94 @@ class CnamController extends Controller
                 ->header('Expires', '0');
         });
     }
-    public function dareaDeSeama(Request $request)
-    {
-        $search = $request->get('search');
-        $pacient_id = $request->get('pacient_id');
+    // public function dareaDeSeama(Request $request)
+    // {
+    //     $search = $request->get('search');
+    //     $search_date = $request->get('search_date');
     
-        // Lista pacienților (filtrare după search, dacă există)
-        $pacienti = Cnam::select('id', 'numele', 'prenumele', 'idnp')
+    //     // 🔹 Normalizează data
+    //     if ($search_date) {
+    //         $search_date = \Carbon\Carbon::parse($search_date)->toDateString();
+    //     }
+    
+    //     // 🔹 Lista pacienților
+    //     $pacienti = Cnam::select('id', 'numele', 'prenumele', 'idnp')
+    //         ->when($search_date, function ($query, $search_date) {
+    //             // Selectăm doar pacienții care au analize în acea dată
+    //             $pacientIds = Laborator::whereDate('data_analizei', $search_date)
+    //                 ->whereNotNull('pacient_id')
+    //                 ->distinct()
+    //                 ->pluck('pacient_id');
+    //             $query->whereIn('id', $pacientIds);
+    //         })
+    //         ->when(!$search_date && $search, function ($query, $search) {
+    //             // Dacă nu s-a ales dată, dar s-a introdus text în căutare
+    //             $query->where(function ($q) use ($search) {
+    //                 $q->whereRaw("CONCAT(numele, ' ', prenumele) LIKE ?", ["%{$search}%"])
+    //                     ->orWhere('numele', 'like', "%{$search}%")
+    //                     ->orWhere('prenumele', 'like', "%{$search}%")
+    //                     ->orWhere('idnp', 'like', "%{$search}%");
+    //             });
+    //         })
+    //         ->orderBy('numele')
+    //         ->get();
+    
+    //     // 🔹 Analizele pentru data selectată
+    //     $analize = collect();
+    //     if ($search_date) {
+    //         $analize = Laborator::whereDate('data_analizei', $search_date)
+    //             ->whereNotNull('pacient_id')
+    //             ->with('pacient')
+    //             ->get();
+    //     }
+    
+    //     return view('cnam.dareaDeSeama', compact(
+    //         'pacienti',
+    //         'analize',
+    //         'search',
+    //         'search_date'
+    //     ));
+    // }
+    public function dareaDeSeama(Request $request)
+{
+    $search = $request->get('search');
+    $search_date = $request->get('search_date');
+
+    // 🔹 Normalizează data (dacă e selectată)
+    if ($search_date) {
+        $search_date = \Carbon\Carbon::parse($search_date)->toDateString();
+    }
+
+    // 🔹 Inițializăm colecția goală
+    $analize = collect();
+
+    // 🔹 Dacă există search sau search_date, atunci căutăm analize
+    if ($search_date || $search) {
+        $analize = Laborator::query()
+            ->with('pacient')
+            ->when($search_date, function ($query, $search_date) {
+                $query->whereDate('data_analizei', $search_date);
+            })
             ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->whereRaw("CONCAT(numele, ' ', prenumele) LIKE ?", ["%{$search}%"])
-                      ->orWhere('numele', 'like', "%{$search}%")
+                $query->whereHas('pacient', function ($q) use ($search) {
+                    $q->where('numele', 'like', "%{$search}%")
                       ->orWhere('prenumele', 'like', "%{$search}%")
-                      ->orWhere('idnp', 'like', "%{$search}%");
+                      ->orWhere('idnp', 'like', "%{$search}%")
+                      ->orWhereRaw("CONCAT(numele, ' ', prenumele) LIKE ?", ["%{$search}%"]);
                 });
             })
-            ->orderBy('numele')
+            ->orderBy('data_analizei', 'desc')
             ->get();
-    
-        // Dacă search-ul returnează exact un pacient și nu s-a selectat manual
-        if ($search && !$pacient_id && $pacienti->count() == 1) {
-            $pacient_id = $pacienti->first()->id;
-        }
-    
-        // Pacientul selectat
-        $pacientSelectat = $pacient_id ? Cnam::find($pacient_id) : null;
-    
-        // Datele disponibile pentru pacientul selectat
-        $dateDisponibile = collect();
-        if ($pacient_id) {
-            $dateDisponibile = Laborator::where('pacient_id', $pacient_id)
-                ->select('data_analizei')
-                ->distinct()
-                ->orderBy('data_analizei', 'desc')
-                ->get();
-        }
-    
-        // Data selectată
-        $data_analizei = $request->get('data_analizei');
-    
-        // Analizele efective
-        $analize = collect();
-        if ($pacient_id && $data_analizei) {
-            $analize = Laborator::where('pacient_id', $pacient_id)
-                ->whereDate('data_analizei', $data_analizei)
-                ->get();
-        }
-    
-        return view('cnam.dareaDeSeama', compact(
-            'pacienti',
-            'pacientSelectat',
-            'pacient_id',
-            'dateDisponibile',
-            'data_analizei',
-            'analize',
-            'search'
-        ));
     }
+
+    // 🔹 Lista pacienților (pentru dropdown sau select, dacă e nevoie)
+    $pacienti = Cnam::select('id', 'numele', 'prenumele', 'idnp')
+        ->orderBy('numele')
+        ->get();
+
+    return view('cnam.dareaDeSeama', compact('analize', 'pacienti', 'search', 'search_date'));
+}
+
     
     
     
