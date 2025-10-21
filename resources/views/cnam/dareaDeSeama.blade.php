@@ -7,21 +7,37 @@
         {{-- Formular de selectare pacient + dată --}}
         <form method="GET" action="{{ route('cnam.dareaDeSeama') }}" class="mb-4">
             <div class="row g-3 align-items-end">
-                <div class="col-md-5">
-                    <label for="pacient_id" class="form-label">Pacient</label>
-                    <select name="pacient_id" id="pacient_id" class="form-select" onchange="this.form.submit()">
-                        <option value="">Selectează pacientul</option>
-                        @foreach ($pacienti as $pacient)
-                            <option value="{{ $pacient->id }}" {{ $pacient_id == $pacient->id ? 'selected' : '' }}>
-                                {{ $pacient->numele }} {{ $pacient->prenumele }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
 
-                @if ($dateDisponibile->count())
+                {{-- Căutare opțională --}}
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Caută pacient</label>
+                    <div class="input-group">
+                        <input type="text" name="search" id="search" class="form-control"
+                            placeholder="Caută pacient după nume, prenume sau IDNP" value="{{ request('search') }}"
+                            style="width: 30%">
+                        <button class="btn btn-primary" type="submit">Caută</button>
+                    </div>
+                </div>
+                <br>
+                {{-- Selectare pacient doar dacă e nevoie --}}
+                @if (!$pacientSelectat || $pacienti->count() > 1)
                     <div class="col-md-4">
-                        <label for="data_analizei" class="form-label">Data analizei</label>
+                        <label for="pacient_id" class="form-label">Selectează pacient</label>
+                        <select name="pacient_id" id="pacient_id" class="form-select" onchange="this.form.submit()">
+                            <option value="">Selectează pacientul</option>
+                            @foreach ($pacienti as $pacient)
+                                <option value="{{ $pacient->id }}" {{ $pacient_id == $pacient->id ? 'selected' : '' }}>
+                                    {{ $pacient->numele }} {{ $pacient->prenumele }} ({{ $pacient->idnp }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
+                <br>
+                {{-- Selectare dată --}}
+                @if ($dateDisponibile->count())
+                    <div class="col-md-3">
+                        <label for="data_analizei" class="form-label">Selectează data</label>
                         <select name="data_analizei" id="data_analizei" class="form-select" onchange="this.form.submit()">
                             <option value="">Selectează data</option>
                             @foreach ($dateDisponibile as $data)
@@ -47,15 +63,15 @@
                             <div class="analiza-col">Hemograma</div>
                             {{-- <div class="analiza-col"><input type="checkbox" {{ $a->hemograma ? 'checked' : '' }}>
                             </div> --}}
-                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_hemograma ? 'checked' : '' }}
-                                    ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_hemograma ? 'checked' : '' }}>
+                            </div>
                             {{-- <div class="analiza-col">{{ $a->rezultat_hemograma_text ?? '' }}</div> --}}
                         </div>
 
                         {{-- VSH --}}
                         <div class="analiza-row">
                             <div class="analiza-col">VSH</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->vsh ? 'checked' : '' }} ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->vsh ? 'checked' : '' }}></div>
                             {{-- <div class="analiza-col"></div> --}}
                             {{-- <div class="analiza-col">{{ $a->rezultat_vsh_text ?? '' }}</div> --}}
                         </div>
@@ -63,8 +79,7 @@
                         {{-- Coagulograma --}}
                         <div class="analiza-row">
                             <div class="analiza-col">Coagulograma</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->coagulograma ? 'checked' : '' }}
-                                    ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->coagulograma ? 'checked' : '' }}></div>
                             {{-- <div class="analiza-col"></div> --}}
                             {{-- <div class="analiza-col">{{ $a->rezultat_coagulograma_text ?? '' }}</div> --}}
                         </div>
@@ -74,8 +89,8 @@
                             <div class="analiza-col">Urograma</div>
                             {{-- <div class="analiza-col"><input type="checkbox" {{ $a->urograma ? 'checked' : '' }} >
                             </div> --}}
-                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_urograma ? 'checked' : '' }}
-                                    ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_urograma ? 'checked' : '' }}>
+                            </div>
                             {{-- <div class="analiza-col">{{ $a->rezultat_urograma_text ?? '' }}</div> --}}
                         </div>
                     </div>
@@ -85,53 +100,53 @@
                             <div class="analiza-col">Imunologia</div>
                             {{-- <div class="analiza-col"><input type="checkbox" {{ $a->imunologia ? 'checked' : '' }} >
                             </div> --}}
-                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_imunologia ? 'checked' : '' }}
-                                    ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_imunologia ? 'checked' : '' }}>
+                            </div>
                             {{-- <div class="analiza-col">{{ $a->rezultat_imunologia_text ?? '' }}</div> --}}
                         </div>
 
                         {{-- Subdetalii Imunologie --}}
                         <div class="analiza-row">
                             <div class="analiza-col">Antistreptolizina O</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->antistreptolizina_o ? 'checked' : '' }}
-                                    ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->antistreptolizina_o ? 'checked' : '' }}>
+                            </div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}
                         </div>
                         <div class="analiza-row">
                             <div class="analiza-col">Factor reumatic</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->factor_reumatic ? 'checked' : '' }}
-                                    ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->factor_reumatic ? 'checked' : '' }}>
+                            </div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}
                         </div>
                         <div class="analiza-row">
                             <div class="analiza-col">PCR</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->pcr ? 'checked' : '' }} ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->pcr ? 'checked' : '' }}></div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}
                         </div>
                         <div class="analiza-row">
                             <div class="analiza-col">TT3</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->tt3 ? 'checked' : '' }} ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->tt3 ? 'checked' : '' }}></div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}
                         </div>
                         <div class="analiza-row">
                             <div class="analiza-col">TT4</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->tt4 ? 'checked' : '' }} ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->tt4 ? 'checked' : '' }}></div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}
                         </div>
                         <div class="analiza-row">
                             <div class="analiza-col">TSH</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->tsh ? 'checked' : '' }} ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->tsh ? 'checked' : '' }}></div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}
                         </div>
                         <div class="analiza-row">
                             <div class="analiza-col">PSA</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->psa ? 'checked' : '' }} ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->psa ? 'checked' : '' }}></div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}
                         </div>
@@ -141,8 +156,7 @@
                             <div class="analiza-col">HbA1c</div>
                             {{-- <div class="analiza-col"><input type="checkbox" {{ $a->hba1c ? 'checked' : '' }} >
                             </div> --}}
-                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_hba1c ? 'checked' : '' }}
-                                    >
+                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_hba1c ? 'checked' : '' }}>
                             </div>
                             {{-- <div class="analiza-col"></div> --}}
                         </div>
@@ -154,8 +168,8 @@
                             {{-- <div class="analiza-col"><input type="checkbox" {{ $a->biochimia ? 'checked' : '' }}
                                     >
                             </div> --}}
-                            <div class="analiza-col"><input type="checkbox"
-                                    {{ $a->proba_biochimia ? 'checked' : '' }} ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_biochimia ? 'checked' : '' }}>
+                            </div>
 
                             {{-- <div class="analiza-col">{{ $a->rezultat_biochimia_text ?? '' }}</div> --}}
                         </div>
@@ -185,7 +199,7 @@
                             <div class="analiza-row">
                                 {{-- <div class="analiza_column2"> --}}
                                 <div class="analiza-col">{{ $label }}</div>
-                                <div class="analiza-col"><input type="checkbox" {{ $a->$field ? 'checked' : '' }} >
+                                <div class="analiza-col"><input type="checkbox" {{ $a->$field ? 'checked' : '' }}>
                                 </div>
                                 {{-- </div> --}}
                                 {{-- <div class="analiza-col"></div>
@@ -200,23 +214,22 @@
                             {{-- <div class="analiza-col"><input type="checkbox" {{ $a->coprologia ? 'checked' : '' }}
                                     >
                             </div> --}}
-                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_coprologia ? 'checked' : '' }}
-                                    ></div>
+                            <div class="analiza-col"><input type="checkbox" {{ $a->proba_coprologia ? 'checked' : '' }}>
+                            </div>
                             {{-- <div class="analiza-col">{{ $a->rezultat_coprologia_text ?? '' }}</div> --}}
                         </div>
 
                         {{-- Diverse --}}
                         <div class="analiza-row">
                             <div class="analiza-col">Helminți</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->helminti ? 'checked' : '' }} >
+                            <div class="analiza-col"><input type="checkbox" {{ $a->helminti ? 'checked' : '' }}>
                             </div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}
                         </div>
                         <div class="analiza-row">
                             <div class="analiza-col">Sânge ocult</div>
-                            <div class="analiza-col"><input type="checkbox" {{ $a->sange_ocult ? 'checked' : '' }}
-                                    >
+                            <div class="analiza-col"><input type="checkbox" {{ $a->sange_ocult ? 'checked' : '' }}>
                             </div>
                             {{-- <div class="analiza-col"></div>
                             <div class="analiza-col"></div> --}}

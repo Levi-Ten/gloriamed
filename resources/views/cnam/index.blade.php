@@ -14,7 +14,8 @@
         @enderror
 
         <div style="margin: 20px 0;">
-            <input type="search" id="searchInput" placeholder="Caută pacient după nume, prenume sau IDNP" class="form-control">
+            <input type="search" id="searchInput" placeholder="Caută pacient după nume, prenume sau IDNP" class="form-control"
+                style="width: 30%">
             <button id="searchBtn" class="btn btn-primary mt-2">Caută</button>
         </div>
         {{-- Modal pentru afișarea informațiilor pacientului --}}
@@ -125,7 +126,7 @@
             </tr>
         </table>
 
-       
+
         <!-- Script -->
         <script>
             document.getElementById('searchBtn').addEventListener('click', function() {

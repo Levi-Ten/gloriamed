@@ -50,5 +50,4 @@ Route::middleware(['auth.cnam'])->group(function () {
     Route::get('/darea-de-seama/analize/{pacientId}/{data}', [CnamController::class, 'getAnalize']);
 
     Route::get('/search', [CnamController::class, 'search'])->name('cnam.search');
-
 });

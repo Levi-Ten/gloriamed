@@ -66,6 +66,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Pacient</th>
+                            <th>Data nasterii</th>
                             <th>Data procedurii</th>
                             @foreach ($analizeFields as $field)
                                 <th>{{ ucfirst($field) }}</th>
@@ -79,6 +80,7 @@
                             <tr>
                                 <td>{{ $p->id }}</td>
                                 <td>{{ $p->numele }} {{ $p->prenumele }}</td>
+                                <td>{{ $p->data_nasterii }}</td>
                                 <td>{{ $proc ? \Carbon\Carbon::parse($proc->updated_at)->format('d.m.Y') : '-' }}</td>
 
                                 @foreach ($analizeFields as $field)

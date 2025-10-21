@@ -28,7 +28,7 @@ class ProceduraController extends Controller
                         ->orWhere('hemostaza', 1);
                 });
             })
-            ->orWhereDoesntHave('procedura')
+            // ->orWhereDoesntHave('procedura')
             ->orderByDesc('id')
             ->get();
         $columns = Schema::getColumnListing('proceduri');
