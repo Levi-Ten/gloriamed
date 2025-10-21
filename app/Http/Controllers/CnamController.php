@@ -113,54 +113,6 @@ class CnamController extends Controller
                 ->header('Expires', '0');
         });
     }
-    // public function dareaDeSeama(Request $request)
-    // {
-    //     $search = $request->get('search');
-    //     $search_date = $request->get('search_date');
-    
-    //     // 🔹 Normalizează data
-    //     if ($search_date) {
-    //         $search_date = \Carbon\Carbon::parse($search_date)->toDateString();
-    //     }
-    
-    //     // 🔹 Lista pacienților
-    //     $pacienti = Cnam::select('id', 'numele', 'prenumele', 'idnp')
-    //         ->when($search_date, function ($query, $search_date) {
-    //             // Selectăm doar pacienții care au analize în acea dată
-    //             $pacientIds = Laborator::whereDate('data_analizei', $search_date)
-    //                 ->whereNotNull('pacient_id')
-    //                 ->distinct()
-    //                 ->pluck('pacient_id');
-    //             $query->whereIn('id', $pacientIds);
-    //         })
-    //         ->when(!$search_date && $search, function ($query, $search) {
-    //             // Dacă nu s-a ales dată, dar s-a introdus text în căutare
-    //             $query->where(function ($q) use ($search) {
-    //                 $q->whereRaw("CONCAT(numele, ' ', prenumele) LIKE ?", ["%{$search}%"])
-    //                     ->orWhere('numele', 'like', "%{$search}%")
-    //                     ->orWhere('prenumele', 'like', "%{$search}%")
-    //                     ->orWhere('idnp', 'like', "%{$search}%");
-    //             });
-    //         })
-    //         ->orderBy('numele')
-    //         ->get();
-    
-    //     // 🔹 Analizele pentru data selectată
-    //     $analize = collect();
-    //     if ($search_date) {
-    //         $analize = Laborator::whereDate('data_analizei', $search_date)
-    //             ->whereNotNull('pacient_id')
-    //             ->with('pacient')
-    //             ->get();
-    //     }
-    
-    //     return view('cnam.dareaDeSeama', compact(
-    //         'pacienti',
-    //         'analize',
-    //         'search',
-    //         'search_date'
-    //     ));
-    // }
     public function dareaDeSeama(Request $request)
 {
     $search = $request->get('search');
