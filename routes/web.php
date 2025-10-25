@@ -33,6 +33,8 @@ Route::middleware(['auth.cnam'])->group(function () {
     // Route::get('/laborator/search-pacienti', [LaboratorController::class, 'searchPacienti'])->name('laborator.searchPacienti');
 
     Route::get('/laborator/create', [LaboratorController::class, 'create'])->name('laborator.create');
+    Route::delete('/laborator/delete-by-pacient-date', [LaboratorController::class, 'destroyByPacientAndDate'])
+    ->name('laborator.destroyByPacientAndDate');
 
 
 
