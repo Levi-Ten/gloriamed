@@ -117,11 +117,150 @@ class LaboratorController extends Controller
         ));
     }
 
+    // public function store(Request $request)
+    // {
+    //     // $x = $request->input('data_analizei');
+    //     // dd($x);
+    //     $data = $request->all();
+
+    //     // Transformăm checkbox-urile în boolean
+    //     $checkboxFields = [
+    //         'hemograma',
+    //         'proba_hemograma',
+    //         'vsh',
+    //         'coagulograma',
+    //         'hemostaza',
+    //         'proba_hemostaza',
+    //         'mrs_hiv',
+    //         'proba_mrs_hiv',
+    //         'biochimia',
+    //         'proba_biochimia',
+    //         'colesterol_total',
+    //         'hdl_colesterol',
+    //         'ldl_colesterol',
+    //         'trigliceride',
+    //         'ureea',
+    //         'creatina',
+    //         'afp',
+    //         'proba_afp',
+    //         'glucoza',
+    //         'alt',
+    //         'ast',
+    //         'alfa_amilaza',
+    //         'fosfataza_alcalina',
+    //         'ldh',
+    //         'bilirubina_totala',
+    //         'bilirubina_directa',
+    //         'lipaza',
+    //         'proteina_totala',
+    //         'albumina',
+    //         'acid_uric',
+    //         'ggt',
+    //         'magneziu',
+    //         'calciu',
+    //         'ferum',
+    //         'imunologia',
+    //         'proba_imunologia',
+    //         'antistreptolizina_o',
+    //         'factor_reumatic',
+    //         'pcr',
+    //         'tt3',
+    //         'tt4',
+    //         'tsh',
+    //         'psa',
+    //         'hbsag',
+    //         'proba_hbsag',
+    //         'hba1c',
+    //         'proba_hba1c',
+    //         'urograma',
+    //         'proba_urograma',
+    //         'coprologia',
+    //         'proba_coprologia',
+    //         'helminti',
+    //         'sange_ocult'
+    //     ];
+
+    //     foreach ($checkboxFields as $field) {
+    //         $data[$field] = $request->has($field);
+    //     }
+
+    //     $pacient_id = $request->pacient_id;
+    //     $data_analizei = $request->input('data_analizei');
+
+    //     // Verificăm dacă există deja o analiză pentru pacient și data respectivă
+    //     $analizaExistenta = Laborator::where('pacient_id', $pacient_id)
+    //         ->where('data_analizei', $data_analizei)
+    //         ->first();
+
+    //     if ($analizaExistenta) {
+    //         // Dacă există, facem update
+    //         $analizaExistenta->update($data);
+    //         $analiza = $analizaExistenta;
+    //     } else {
+    //         // Dacă nu există, creăm un nou rând
+    //         $data['pacient_id'] = $pacient_id;
+    //         $data['data_analizei'] = $data_analizei;
+    //         $analiza = Laborator::create($data);
+    //     }
+
+    //     // Gestionăm fișierele
+    //     $fileFields = [
+    //         'rezultat_hemograma_file' => 'hemograma',
+    //         'rezultat_biochimia_file' => 'biochimia',
+    //         'rezultat_imunologia_file' => 'imunologia',
+    //         'rezultat_urograma_file' => 'urograma',
+    //         'rezultat_coprologia_file' => 'coprologia'
+    //     ];
+
+    //     foreach ($fileFields as $fileField => $tip) {
+    //         if ($request->hasFile($fileField)) {
+    //             $path = $request->file($fileField)->store('analize', 'public');
+    //             LaboratorFisier::create([
+    //                 'laborator_id' => $analiza->id,
+    //                 'tip_rezultat' => $tip,
+    //                 'fisier' => $path,
+    //             ]);
+    //         }
+    //     }
+
+    //     // Verificăm dacă pacientul are toate procedurile
+    //     $fieldsToCheck = ['hemograma', 'urograma', 'biochimia', 'imunologia', 'hba1c', 'hbsag', 'mrs_hiv', 'afp', 'hemostaza'];
+    //     $areToate = collect($fieldsToCheck)->every(fn($f) => $request->has($f)) ? 1 : 0;
+    //     $shouldSave = false;
+    //     foreach ($fieldsToCheck as $key) {
+    //         if ($request->has($key) && $request->get($key) === 'on') {
+    //             $shouldSave = true;
+    //         }
+    //     }
+    //     if ($shouldSave) {
+    //         Procedura::create(
+    //             array_merge(
+    //                 $data,
+    //                 [
+    //                     'toate_procedurile' => $areToate,
+    //                     'data_analizei' => $data_analizei,
+    //                     'pacient_id' => $pacient_id
+    //                 ]
+    //             )
+    //         );
+    //     }
+    //     $array = ['hemograma' => 'proba_hemograma', 'biochimia' => 'proba_biochimia', 'imunologia' => 'proba_imunologia', 'urograma' => 'proba_urograma', 'hba1c' => 'proba_hba1c', 'hbsag' => 'proba_hbsag', 'mrs_hiv' => 'proba_mrs_hiv', 'afp' => 'proba_afp', 'hemostaza' => 'proba_hemostaza', 'data_analizei' => 'data_analizei'];
+
+    //     foreach ($array as $key => $value) {
+    //         if ($request->has($value) && $request->get($value) == 'on') {
+    //             Procedura::where('pacient_id', $pacient_id)
+    //                 ->whereDate('data_analizei', $data_analizei)
+    //                 ->update([$key => 0]);
+    //         }
+    //     }
+    //     return redirect()->route('laborator.create', ['pacient_id' => $pacient_id])
+    //         ->with('success', 'Analizele și fișierele au fost salvate cu succes!');
+    // }
     public function store(Request $request)
     {
-        // $x = $request->input('data_analizei');
-        // dd($x);
         $data = $request->all();
+        $pacient_id = $request->pacient_id;
+        $data_analizei = $request->input('data_analizei');
 
         // Transformăm checkbox-urile în boolean
         $checkboxFields = [
@@ -139,8 +278,8 @@ class LaboratorController extends Controller
             'hdl_colesterol',
             'ldl_colesterol',
             'trigliceride',
-            'urea',
-            'creatinina',
+            'ureea',
+            'creatina',
             'afp',
             'proba_afp',
             'glucoza',
@@ -184,24 +323,11 @@ class LaboratorController extends Controller
             $data[$field] = $request->has($field);
         }
 
-        $pacient_id = $request->pacient_id;
-        $data_analizei = $request->input('data_analizei');
-
         // Verificăm dacă există deja o analiză pentru pacient și data respectivă
-        $analizaExistenta = Laborator::where('pacient_id', $pacient_id)
-            ->where('data_analizei', $data_analizei)
-            ->first();
-
-        if ($analizaExistenta) {
-            // Dacă există, facem update
-            $analizaExistenta->update($data);
-            $analiza = $analizaExistenta;
-        } else {
-            // Dacă nu există, creăm un nou rând
-            $data['pacient_id'] = $pacient_id;
-            $data['data_analizei'] = $data_analizei;
-            $analiza = Laborator::create($data);
-        }
+        $analiza = Laborator::updateOrCreate(
+            ['pacient_id' => $pacient_id, 'data_analizei' => $data_analizei],
+            $data
+        );
 
         // Gestionăm fișierele
         $fileFields = [
@@ -212,39 +338,89 @@ class LaboratorController extends Controller
             'rezultat_coprologia_file' => 'coprologia'
         ];
 
+        // foreach ($fileFields as $fileField => $tip) {
+        //     if ($request->hasFile($fileField)) {
+        //         $path = $request->file($fileField)->store('analize', 'public');
+        //         LaboratorFisier::create([
+        //             'laborator_id' => $analiza->id,
+        //             'tip_rezultat' => $tip,
+        //             'fisier' => $path,
+        //         ]);
+        //     }
+        // }
         foreach ($fileFields as $fileField => $tip) {
             if ($request->hasFile($fileField)) {
-                $path = $request->file($fileField)->store('analize', 'public');
+                $file = $request->file($fileField);
+        
+                // Creează folderul public/analize dacă nu există
+                $destinationPath = public_path('analize');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+        
+                // Creează un nume unic pentru fișier
+                $fileName = time() . '_' . $file->getClientOriginalName();
+        
+                // Mută fișierul în public/analize
+                $file->move($destinationPath, $fileName);
+        
+                // Salvează în baza de date
                 LaboratorFisier::create([
                     'laborator_id' => $analiza->id,
                     'tip_rezultat' => $tip,
-                    'fisier' => $path,
+                    'fisier' => 'analize/' . $fileName,
                 ]);
             }
         }
+        
 
-        // Verificăm dacă pacientul are toate procedurile
+        // Verificăm dacă pacientul are toate procedurile principale
         $fieldsToCheck = ['hemograma', 'urograma', 'biochimia', 'imunologia', 'hba1c', 'hbsag', 'mrs_hiv', 'afp', 'hemostaza'];
         $areToate = collect($fieldsToCheck)->every(fn($f) => $request->has($f)) ? 1 : 0;
 
-        // Sincronizare proceduri
-        Procedura::updateOrCreate(
-            ['pacient_id' => $pacient_id],
+        // Verificăm dacă există deja o procedură pentru pacient și data respectivă
+        $procedura = Procedura::updateOrCreate(
+            ['pacient_id' => $pacient_id, 'data_analizei' => $data_analizei],
             array_merge($data, ['toate_procedurile' => $areToate])
         );
 
-        //   dd($request->all());
-        $array = ['hemograma' => 'proba_hemograma', 'biochimia' => 'proba_biochimia', 'imunologia' => 'proba_imunologia', 'urograma' => 'proba_urograma', 'hba1c' => 'proba_hba1c', 'hbsag' => 'proba_hbsag', 'mrs_hiv' => 'proba_mrs_hiv', 'afp' => 'proba_afp', 'hemostaza' => 'proba_hemostaza'];
+        // Setăm probele individuale la 0 dacă sunt bifate
+        $probaMap = [
+            'hemograma' => 'proba_hemograma',
+            'biochimia' => 'proba_biochimia',
+            'imunologia' => 'proba_imunologia',
+            'urograma' => 'proba_urograma',
+            'hba1c' => 'proba_hba1c',
+            'hbsag' => 'proba_hbsag',
+            'mrs_hiv' => 'proba_mrs_hiv',
+            'afp' => 'proba_afp',
+            'hemostaza' => 'proba_hemostaza',
+            'data_analizei' => 'data_analizei'
+        ];
 
-        foreach ($array as $key => $value) {
+        foreach ($probaMap as $key => $value) {
             if ($request->has($value) && $request->get($value) == 'on') {
-                Procedura::where('pacient_id', $pacient_id)->update([$key => 0]);
+                $procedura->update([$key => 0]);
             }
         }
+        // 🔹 Verificăm dacă toate câmpurile principale sunt 0 și ștergem rândul dacă da
+        $probaMapKeys = [
+            'hemograma',
+            'biochimia',
+            'imunologia',
+            'urograma',
+            'hba1c',
+            'hbsag',
+            'mrs_hiv',
+            'afp',
+            'hemostaza'
+        ];
 
-        // if ($request->has('proba_hemograma') && $request->get('proba_hemograma') == 'on') {
-        //     Procedura::where('pacient_id', $pacient_id)->update(['hemograma' => 0]); 
-        // }
+        $allZero = collect($probaMapKeys)->every(fn($key) => $procedura->$key == 0);
+
+        if ($allZero) {
+            $procedura->delete();
+        }
 
         return redirect()->route('laborator.create', ['pacient_id' => $pacient_id])
             ->with('success', 'Analizele și fișierele au fost salvate cu succes!');
@@ -340,7 +516,7 @@ class LaboratorController extends Controller
             $lab->update($data);
 
             // Dacă vrei, poți actualiza și Procedura pentru fiecare pacient
-            $fieldsProcedura = ['hemograma', 'urograma', 'biochimia', 'imunologia', 'hba1c', 'hbsag', 'mrs_hiv', 'afp', 'hemostaza'];
+            $fieldsProcedura = ['hemograma', 'urograma', 'biochimia', 'imunologia', 'hba1c', 'hbsag', 'mrs_hiv', 'afp', 'hemostaza', 'data_procedurii'];
             $areToate = 1;
             foreach ($fieldsProcedura as $field) {
                 if (empty($data[$field])) {
@@ -358,41 +534,40 @@ class LaboratorController extends Controller
         return redirect()->back()->with('success', 'Modificările au fost salvate cu succes!');
     }
 
-public function destroyByPacientAndDate(Request $request)
-{
-    $request->validate([
-        'pacient_id' => 'required|integer',
-        'data_analizei' => 'required|date',
-    ]);
+    public function destroyByPacientAndDate(Request $request)
+    {
+        $request->validate([
+            'pacient_id' => 'required|integer',
+            'data_analizei' => 'required|date',
+        ]);
 
-    // Selectăm toate analizele corespunzătoare pacientului și datei
-    $analize = Laborator::where('pacient_id', $request->pacient_id)
-        ->whereDate('data_analizei', $request->data_analizei)
-        ->get();
+        // Selectăm toate analizele corespunzătoare pacientului și datei
+        $analize = Laborator::where('pacient_id', $request->pacient_id)
+            ->whereDate('data_analizei', $request->data_analizei)
+            ->get();
 
-    if ($analize->isEmpty()) {
-        return back()->with('error', 'Nu s-au găsit analize pentru această dată.');
-    }
-
-    // Parcurgem fiecare analiză și ștergem fișierele asociate
-    foreach ($analize as $analiza) {
-        if ($analiza->fisiere && $analiza->fisiere->count()) {
-            foreach ($analiza->fisiere as $fisier) {
-                // Ștergem fișierul fizic din storage
-                if (Storage::exists('public/' . $fisier->fisier)) {
-                    Storage::delete('public/' . $fisier->fisier);
-                }
-
-                // Ștergem înregistrarea din tabelul "fisiere"
-                $fisier->delete();
-            }
+        if ($analize->isEmpty()) {
+            return back()->with('error', 'Nu s-au găsit analize pentru această dată.');
         }
 
-        // Ștergem analiza din tabelul principal
-        $analiza->delete();
+        // Parcurgem fiecare analiză și ștergem fișierele asociate
+        foreach ($analize as $analiza) {
+            if ($analiza->fisiere && $analiza->fisiere->count()) {
+                foreach ($analiza->fisiere as $fisier) {
+                    // Ștergem fișierul fizic din storage
+                    if (Storage::exists('public/' . $fisier->fisier)) {
+                        Storage::delete('public/' . $fisier->fisier);
+                    }
+
+                    // Ștergem înregistrarea din tabelul "fisiere"
+                    $fisier->delete();
+                }
+            }
+
+            // Ștergem analiza din tabelul principal
+            $analiza->delete();
+        }
+
+        return back()->with('success', 'Analizele și fișierele asociate au fost șterse cu succes.');
     }
-
-    return back()->with('success', 'Analizele și fișierele asociate au fost șterse cu succes.');
-}
-
 }

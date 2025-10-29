@@ -6,6 +6,7 @@
             <a href="{{ route('proceduri.index') }}" class="btn-nav">Sala de proceduri</a>
             <a href="{{ route('cnam.index') }}" class="btn-nav">Lista pacienți</a>
             <a href="{{ route('cnam.dareaDeSeama') }}" class="btn-nav">Darea de seamă</a>
+            <a href="{{ route('auth.changePassword') }}">Schimbă parola</a>
         </nav>
     </div>
 </header>

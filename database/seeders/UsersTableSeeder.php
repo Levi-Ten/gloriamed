@@ -12,7 +12,7 @@ class UsersTableSeeder extends Seeder
         // Admin principal
         User::create([
             'name' => 'admin',
-            'password' => 'admin123', // se hash-uiește automat bd admin123admin123@A
+            'password' => 'admin1234', // se hash-uiește automat bd admin123admin123@A
             'role' => 'principal',
         ]);
 

@@ -21,8 +21,10 @@ Route::get('logout', [AuthCnamController::class, 'logout'])->name('auth.logout')
 
 Route::middleware(['auth.cnam'])->group(function () {
     Route::resource('cnam', CnamController::class);
-    // Route::get('/laborator', [LaboratorController::class, 'index'])->name('laborator.index');
-    // Route::post('/laborator/store', [LaboratorController::class, 'store'])->name('laborator.store');
+
+    Route::get('/change-password', [AuthCnamController::class, 'showChangePasswordForm'])->name('auth.changePassword');
+    Route::post('/change-password', [AuthCnamController::class, 'updatePassword'])->name('auth.updatePassword');
+
     Route::get('/laborator', [LaboratorController::class, 'create'])->name('laborator.create');
     Route::post('/laborator', [LaboratorController::class, 'store'])->name('laborator.store');
     Route::delete('/laborator/fisiere/{id}', [LaboratorController::class, 'destroyFisier'])->name('laborator.fisiere.destroy');
@@ -34,7 +36,7 @@ Route::middleware(['auth.cnam'])->group(function () {
 
     Route::get('/laborator/create', [LaboratorController::class, 'create'])->name('laborator.create');
     Route::delete('/laborator/delete-by-pacient-date', [LaboratorController::class, 'destroyByPacientAndDate'])
-    ->name('laborator.destroyByPacientAndDate');
+        ->name('laborator.destroyByPacientAndDate');
 
 
 

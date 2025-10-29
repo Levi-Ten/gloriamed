@@ -13,8 +13,8 @@ class ProceduraController extends Controller
     public function index()
     {
         // dd(123);
-        $pacienti = Cnam::with('procedura')
-            ->whereHas('procedura', function ($q) {
+        $pacienti = Cnam::with('proceduri')
+            ->whereHas('proceduri', function ($q) {
                 // $q->where('toate_procedurile', 0);
                 $q->where(function ($q1) {
                     $q1->where('hemograma', 1)
@@ -34,7 +34,7 @@ class ProceduraController extends Controller
         $columns = Schema::getColumnListing('proceduri');
         $ignore = ['id', 'pacient_id', 'data_procedurii', 'created_at', 'updated_at', 'toate_procedurile', 'data_analizei'];
         $analizeFields = array_diff($columns, $ignore);
-
+// dd($pacienti);
         return view('cnam.proceduri', compact('pacienti', 'analizeFields'));
     }
 

@@ -12,7 +12,7 @@ class Procedura extends Model
     protected $table = 'proceduri';
 
     protected $fillable = [
-        'pacient_id', 'data_procedurii',
+        'pacient_id', 'data_analizei',
         'hemograma','urograma','biochimia','imunologia',
         'hba1c','hbsag','mrs_hiv','afp','hemostaza'
     ];

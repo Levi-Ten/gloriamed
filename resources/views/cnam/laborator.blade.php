@@ -39,22 +39,6 @@
             @endif
         @endif
 
-        {{-- Navigare pacient --}}
-        {{-- <div class="form-search">
-            @if ($prevDate)
-                <a href="{{ route('laborator.create', ['pacient_id' => $pacient_id, 'data_analizei' => $prevDate]) }}"
-                    class="btn btn-secondary me-2">
-                    <i class="fa-solid fa-arrow-left-long"></i> Precedent
-                </a>
-            @endif
-            @if ($next_id)
-                <a href="{{ route('laborator.create', ['pacient_id' => $pacient_id, 'data_analizei' => $nextDate]) }}"
-                    class="btn btn-secondary">
-                    Următor <i class="fa-solid fa-arrow-right-long"></i>
-                </a>
-            @endif
-        </div> --}}
-
         @if (!$pacient_id && request('search'))
             @if ($pacienti->count())
                 <div class="container-laborator">
@@ -119,10 +103,13 @@
                 <div class="alert alert-danger" style="color: red">{{ session('error') }}</div>
             @endif
 
-            <div style="position: relative; margin-bottom: 20px;">
+            <div 
+            {{-- style="position: relative; margin-bottom: 20px;" --}}
+            >
 
                 <form method="POST" action="{{ route('laborator.destroyByPacientAndDate') }}"
-                    style="position: absolute; top: 134px; left: 150px; z-index: 1001">
+                    {{-- style="position: absolute; top: 134px; left: 150px; z-index: 1001" --}}
+                    >
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="pacient_id" value="{{ $pacient_id }}">
@@ -166,47 +153,44 @@
                             'Coagulograma' => ['checked' => 'coagulograma', 'text' => 'rezultat_coagulograma_text'],
                             'Hemostaza' => ['checked' => 'hemostaza'],
                             'Proba hemostaza' => ['checked' => 'proba_hemostaza'],
-                            'MRS HIV' => ['checked' => 'mrs_hiv', 'proba' => 'proba_mrs_hiv'],
-                            'Proba mrs hiv' => ['checked' => 'proba_mrs_hiv'],
+                            'MRS-HIV' => ['checked' => 'mrs_hiv', 'proba' => 'proba_mrs_hiv'],
+                            'Proba MRS-HIV' => ['checked' => 'proba_mrs_hiv'],
                             'Biochimia' => [
                                 'checked' => 'biochimia',
                                 'text' => 'rezultat_biochimia_text',
                                 'file' => 'biochimia',
                             ],
                             'Proba biochimia' => ['checked' => 'proba_biochimia'],
-                            'Colesterol total' => ['checked' => 'coletotal'],
-                            'HDL-colesterol' => ['checked' => 'hdlcoletotal'],
-                            'LDL-colesterol' => ['checked' => 'ldlcoletotal'],
+                            'Colesterol total' => ['checked' => 'colesterol_total'],
+                            'HDL-colesterol' => ['checked' => 'hdl_colesterol'],
+                            'LDL-colesterol' => ['checked' => 'ldl_colesterol'],
                             'Trigliceride' => ['checked' => 'trigliceride'],
-                            'Urea' => ['checked' => 'uree'],
+                            'Urea' => ['checked' => 'ureea'],
                             'Creatinina' => ['checked' => 'creatina'],
-                            'AFP' => ['checked' => 'afp'],
-                            'Proba AFP' => ['checked' => 'proba_afp'],
                             'Glucoza' => ['checked' => 'glucoza'],
                             'ALT' => ['checked' => 'alt'],
                             'AST' => ['checked' => 'ast'],
-                            'Alfa-amilaza' => ['checked' => 'alfaamilaza'],
-                            'Fosfataza alcalina' => ['checked' => 'fosfatazaalcalina'],
-                            'LDH lactat dehidratat' => ['checked' => 'ldhlactatdehidratat'],
-                            'Bilirubina totala' => ['checked' => 'bilirubinatotala'],
-                            'Bilirubina directa' => ['checked' => 'bilirubinadirecta'],
+                            'Alfa-amilaza' => ['checked' => 'alfa_amilaza'],
+                            'ALP' => ['checked' => 'fosfataza_alcalina'],
+                            'LDH' => ['checked' => 'ldh'],
+                            'Bilirubina totala' => ['checked' => 'bilirubina_totala'],
+                            'Bilirubina directa' => ['checked' => 'bilirubina_directa'],
                             'Lipaza' => ['checked' => 'lipaza'],
-                            'Proteina totala' => ['checked' => 'proteinatottala'],
+                            'Proteina totala' => ['checked' => 'proteina_totala'],
                             'Albumina (ser)' => ['checked' => 'albumina'],
-                            'Acid uric' => ['checked' => 'aciduric'],
+                            'Acid uric' => ['checked' => 'acid_uric'],
                             'GGT' => ['checked' => 'ggt'],
                             'Magneziu' => ['checked' => 'magneziu'],
                             'Calciu' => ['checked' => 'calciu'],
                             'Ferum' => ['checked' => 'ferum'],
-
                             'Imunologia' => [
                                 'checked' => 'imunologia',
                                 'text' => 'rezultat_imunologia_text',
                                 'file' => 'imunologia',
                             ],
                             'Proba imunologia' => ['checked' => 'proba_imunologia'],
-                            'Antistreptolizina-O' => ['checked' => 'antistreptolizinao'],
-                            'Factor reumatic' => ['checked' => 'factorreumatic'],
+                            'Antistreptolizina-O' => ['checked' => 'antistreptolizina_o'],
+                            'Factor reumatic' => ['checked' => 'factor_reumatic'],
                             'PCR' => ['checked' => 'pcr'],
                             'TT3' => ['checked' => 'tt3'],
                             'TT4' => ['checked' => 'tt4'],
@@ -214,6 +198,8 @@
                             'PSA' => ['checked' => 'psa'],
                             'HBsAg' => ['checked' => 'hbsag'],
                             'Proba HBsAg' => ['checked' => 'proba_hbsag'],
+                            'AFP' => ['checked' => 'afp'],
+                            'Proba AFP' => ['checked' => 'proba_afp'],
                             'HbA1c' => ['checked' => 'hba1c'],
                             'Proba HbA1c' => ['checked' => 'proba_hba1c'],
 
@@ -230,7 +216,7 @@
                             ],
                             'Proba coprologia' => ['checked' => 'proba_coprologia'],
                             'Helminti' => ['checked' => 'helminti'],
-                            'Sange ocult' => ['checked' => 'sangeocult'],
+                            'Sange ocult' => ['checked' => 'sange_ocult'],
                             // 'HBsAg' => ['checked'=>'hbsag','text'=>'rezultat_hbsag_text'],
                             // 'HbA1c' => ['checked'=>'hbA1c','text'=>'rezultat_hbA1c_text'],
                         ];

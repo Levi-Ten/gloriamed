@@ -33,15 +33,19 @@ class Cnam extends Model
         });
 
         static::updating(function ($cnam) {
-            $cnam->full_info = $cnam->numele . ' ' . $cnam->prenumele . ' ' . $cnam->data_nasterii. ' ' . $cnam->idnp;
+            $cnam->full_info = $cnam->numele . ' ' . $cnam->prenumele . ' ' . $cnam->data_nasterii . ' ' . $cnam->idnp;
         });
     }
     public function laboratorPacienti()
     {
         return $this->hasMany(CnamLaborator::class);
     }
-    public function procedura()
+    // public function procedura()
+    // {
+    //     return $this->hasOne(Procedura::class, 'pacient_id');
+    // }
+    public function proceduri()
     {
-        return $this->hasOne(Procedura::class, 'pacient_id');
+        return $this->hasMany(Procedura::class, 'pacient_id');
     }
 }

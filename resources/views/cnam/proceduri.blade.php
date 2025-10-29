@@ -1,53 +1,3 @@
-{{-- @extends('layouts.app')
-@section('title', 'Sala de proceduri | Tabel')
-@section('content')
-<div class="container">
-    <h2>Sala de proceduri</h2>
-
-    <form method="POST" action="{{ route('proceduri.updateBulk') }}">
-        @csrf
-        <table border="1" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Pacient</th>
-                    <th>Data procedurii</th>
-                    @foreach ($analizeFields as $field)
-                        <th>{{ ucfirst($field) }}</th>
-                    @endforeach
-                    <th>Ștergere</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($proceduri as $proc)
-                    <tr>
-                        <td>{{ $proc->id }}</td>
-                        <td>{{ $proc->pacient->numele }} {{ $proc->pacient->prenumele }}</td>
-                        <td>{{ $proc->created_at->format('d.m.Y') }}</td>
-
-                        @foreach ($analizeFields as $field)
-                            <td>
-                                <input type="checkbox" name="proceduri[{{ $proc->id }}][{{ $field }}]" 
-                                    {{ $proc->$field ? 'checked' : '' }}>
-                            </td>
-                        @endforeach
-
-                        <td>
-                            <a href="{{ route('proceduri.destroy', $proc->id) }}" class=""
-                               onclick="return confirm('Sigur vrei să ștergi acest pacient?')">
-                                🗑️
-                            </a>
-
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        <button type="submit" class="btn btn-success mt-3">Salvează modificările</button>
-    </form>
-</div>
-@endsection --}}
 @extends('layouts.app')
 @section('title', 'Sala de proceduri')
 @section('content')
@@ -65,39 +15,66 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Data procedurii</th>
                             <th>Pacient</th>
                             <th>Data nasterii</th>
-                            <th>Data procedurii</th>
-                            @foreach ($analizeFields as $field)
+                            {{-- @foreach ($analizeFields as $field)
                                 <th>{{ ucfirst($field) }}</th>
+                            @endforeach --}}
+                            @foreach ($analizeFields as $field)
+                                <th>
+                                    @switch($field)
+                                        @case('hbsag')
+                                            HBsAg
+                                        @break
+
+                                        @case('mrs_hiv')
+                                            MRS HIV
+                                        @break
+
+                                        @case('mrs_hiv')
+                                            MRS HIV
+                                        @break
+
+                                        @case('afp')
+                                            AFP
+                                        @break
+
+                                        @default
+                                            {{ ucfirst($field) }}
+                                    @endswitch
+                                </th>
                             @endforeach
-                            {{-- <th>Ștergere</th> --}}
+                            <th>Actiuni</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($pacienti as $p)
-                            @php $proc = $p->procedura; @endphp
-                            <tr>
-                                <td>{{ $p->id }}</td>
-                                <td>{{ $p->numele }} {{ $p->prenumele }}</td>
-                                <td>{{ $p->data_nasterii }}</td>
-                                <td>{{ $proc ? \Carbon\Carbon::parse($proc->updated_at)->format('d.m.Y') : '-' }}</td>
-
-                                @foreach ($analizeFields as $field)
+                            @php $proc = $p->proceduri; @endphp
+                            @foreach ($proc as $procedura)
+                                <tr>
+                                    <td>{{ $p->id }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($procedura->data_analizei)->format('Y-m-d') }}</td>
+                                    <td>{{ $p->numele }} {{ $p->prenumele }}</td>
+                                    <td>{{ $p->data_nasterii }}</td>
+                                    @foreach ($analizeFields as $field)
+                                        <td>
+                                            <input type="checkbox" name="proceduri[{{ $p->id }}][{{ $field }}]"
+                                                {{ $procedura && $procedura->$field ? 'checked' : '' }}
+                                                class="readonly-checkbox">
+                                        </td>
+                                    @endforeach
                                     <td>
-                                        <input type="checkbox" name="proceduri[{{ $p->id }}][{{ $field }}]"
-                                            {{ $proc && $proc->$field ? 'checked' : '' }} class="readonly-checkbox">
+                                        @if ($proc)
+                                            <a href="{{ route('proceduri.destroy', $procedura->id) }}"
+                                                style="border: 1px solid; padding: 3px;color: white; background-color: red;"
+                                                onclick="return confirm('Sigur vrei să ștergi acest pacient?')">
+                                                🗑 Șterge
+                                            </a>
+                                        @endif
                                     </td>
-                                @endforeach
-                                {{-- <td>
-                                @if ($proc)
-                                <a href="{{ route('proceduri.destroy', $proc->id) }}" class=""
-                                    onclick="return confirm('Sigur vrei să ștergi acest pacient?')">
-                                     🗑️
-                                 </a>
-                                @endif
-                            </td> --}}
-                            </tr>
+                                </tr>
+                            @endforeach
                         @endforeach
                     </tbody>
                 </table>

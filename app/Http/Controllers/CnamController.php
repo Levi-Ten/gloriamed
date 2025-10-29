@@ -114,73 +114,45 @@ class CnamController extends Controller
         });
     }
     public function dareaDeSeama(Request $request)
-{
-    $search = $request->get('search');
-    $search_date = $request->get('search_date');
+    {
+        $search = $request->get('search');
+        $search_date = $request->get('search_date');
 
-    // 🔹 Normalizează data (dacă e selectată)
-    if ($search_date) {
-        $search_date = \Carbon\Carbon::parse($search_date)->toDateString();
-    }
+        // 🔹 Normalizează data (dacă e selectată)
+        if ($search_date) {
+            $search_date = \Carbon\Carbon::parse($search_date)->toDateString();
+        }
 
-    // 🔹 Inițializăm colecția goală
-    $analize = collect();
+        // 🔹 Inițializăm colecția goală
+        $analize = collect();
 
-    // 🔹 Dacă există search sau search_date, atunci căutăm analize
-    if ($search_date || $search) {
-        $analize = Laborator::query()
-            ->with('pacient')
-            ->when($search_date, function ($query, $search_date) {
-                $query->whereDate('data_analizei', $search_date);
-            })
-            ->when($search, function ($query, $search) {
-                $query->whereHas('pacient', function ($q) use ($search) {
-                    $q->where('numele', 'like', "%{$search}%")
-                      ->orWhere('prenumele', 'like', "%{$search}%")
-                      ->orWhere('idnp', 'like', "%{$search}%")
-                      ->orWhereRaw("CONCAT(numele, ' ', prenumele) LIKE ?", ["%{$search}%"]);
-                });
-            })
-            ->orderBy('data_analizei', 'desc')
+        // 🔹 Dacă există search sau search_date, atunci căutăm analize
+        if ($search_date || $search) {
+            $analize = Laborator::query()
+                ->with('pacient')
+                ->when($search_date, function ($query, $search_date) {
+                    $query->whereDate('data_analizei', $search_date);
+                })
+                ->when($search, function ($query, $search) {
+                    $query->whereHas('pacient', function ($q) use ($search) {
+                        $q->where('numele', 'like', "%{$search}%")
+                            ->orWhere('prenumele', 'like', "%{$search}%")
+                            ->orWhere('idnp', 'like', "%{$search}%")
+                            ->orWhereRaw("CONCAT(numele, ' ', prenumele) LIKE ?", ["%{$search}%"]);
+                    });
+                })
+                ->orderBy('data_analizei', 'desc')
+                ->get();
+        }
+
+        // 🔹 Lista pacienților (pentru dropdown sau select, dacă e nevoie)
+        $pacienti = Cnam::select('id', 'numele', 'prenumele', 'idnp')
+            ->orderBy('numele')
             ->get();
+
+        return view('cnam.dareaDeSeama', compact('analize', 'pacienti', 'search', 'search_date'));
     }
 
-    // 🔹 Lista pacienților (pentru dropdown sau select, dacă e nevoie)
-    $pacienti = Cnam::select('id', 'numele', 'prenumele', 'idnp')
-        ->orderBy('numele')
-        ->get();
-
-    return view('cnam.dareaDeSeama', compact('analize', 'pacienti', 'search', 'search_date'));
-}
-
-    
-    
-    
-
-
-
-
-    // public function getDates($pacientId)
-    // {
-    //     // Extrage datele distincte pentru care există analize
-    //     $dates = Laborator::where('pacient_id', $pacientId)
-    //         ->select('data_analiza')
-    //         ->distinct()
-    //         ->orderBy('data_analiza', 'desc')
-    //         ->get();
-
-    //     return response()->json($dates);
-    // }
-
-
-    // public function getAnalize($pacientId, $data)
-    // {
-    //     $analize = Laborator::where('pacient_id', $pacientId)
-    //         ->where('data_analiza', $data)
-    //         ->get(['nume_analiza', 'rezultat', 'activ']);
-
-    //     return response()->json($analize);
-    // }
 
     public function search(Request $request)
     {
